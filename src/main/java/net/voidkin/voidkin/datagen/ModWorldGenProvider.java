@@ -1,6 +1,7 @@
 package net.voidkin.voidkin.datagen;
 
 import net.voidkin.voidkin.VoidkinMod;
+import net.voidkin.voidkin.damage_types.ModDamageTypes;
 import net.voidkin.voidkin.worldgen.ModBiomeModifiers;
 import net.voidkin.voidkin.world.ModConfiguredFeatures;
 import net.voidkin.voidkin.worldgen.ModPlacedFeatures;
@@ -25,6 +26,7 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
             .add(ForgeRegistries.Keys.BIOME_MODIFIERS, ModBiomeModifiers::bootstrap)
             .add(Registries.BIOME, ModBiomes::boostrap)
             .add(Registries.LEVEL_STEM, ModDimensions::bootstrapStem);
+            //.add(Registries.DAMAGE_TYPE, ModDamageTypes::bootstrap);
 
     public ModWorldGenProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, BUILDER, Set.of(VoidkinMod.MODID));

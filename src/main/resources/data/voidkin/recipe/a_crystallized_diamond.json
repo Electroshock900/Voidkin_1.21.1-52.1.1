@@ -1,5 +1,5 @@
 {
-  "type": "voidkin:crystallizer",
+  "type": "voidkin:crystallizing",
   "ingredient": {
     "item": "voidkin:raw_dark_shard"
   },

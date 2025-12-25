@@ -32,7 +32,7 @@ public class ModTabs {
                         pOutput.accept(ModItems.ALASTOR_MASHUP_MUSIC_DISC.get());
                         pOutput.accept(ModItems.BRIGHTER_MUSIC_DISC.get());
                         //pOutput.accept(ModBlocks.CRYSTALLIZER.get());
-                        //pOutput.accept(ModBlocks.ALTAR_PEDESTAL.get());
+                        //pOutput.accept(ModBlocks.VOID_ALTAR.get());
                     })
                     .build());
     public static final RegistryObject<CreativeModeTab> DEATH_TAB = CREATIVE_MODE_TABS.register("death_tab",
@@ -106,8 +106,9 @@ public class ModTabs {
 
                         pOutput.accept(ModBlocks.SBLOCK.get());
                         pOutput.accept(ModBlocks.POLISHER.get());
-                        pOutput.accept(ModBlocks.MAIN_ALTAR_PEDESTAL.get());
-                        pOutput.accept(ModBlocks.SIDE_ALTAR_PEDESTAL.get());
+                        //pOutput.accept(ModBlocks.VOID_ALTAR.get());
+                        //pOutput.accept(ModBlocks.VOID_PEDESTAL.get());
+                        pOutput.accept(ModBlocks.PEDESTAL.get());
                         //pOutput.accept(ModBlocks.AB.get());
 
                         pOutput.accept(ModBlocks.DEATH_PORTAL.get());
@@ -234,6 +235,9 @@ public class ModTabs {
                         pOutput.accept(ModItems.VOID_TORCH.get());
                         pOutput.accept(ModItems.D_TORCH.get());
                         pOutput.accept(ModBlocks.CRYSTALLIZER.get());
+                        pOutput.accept(ModBlocks.PEDESTAL.get());
+                        pOutput.accept(ModBlocks.VOID_ALTAR.get());
+                        pOutput.accept(ModBlocks.VOID_PEDESTAL.get());
                     }).build());
     public static final RegistryObject<CreativeModeTab> BIOMECHANICAL_TAB = CREATIVE_MODE_TABS.register("biomechanical_tab",
             ()-> CreativeModeTab.builder()

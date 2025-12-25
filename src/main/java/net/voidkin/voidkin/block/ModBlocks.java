@@ -406,10 +406,15 @@ public class ModBlocks {
     //public static final RegistryObject<Block> CANDY_CANE_FURNACE = registerBlock("candy_cane_furnace", () -> new CandyCaneFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)));
     public static final RegistryObject<Block> SBLOCK = registerBlock("sblock",() -> new BlockS(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)));
     public static final RegistryObject<Block> POLISHER = registerBlock("polisher",() -> new PolisherBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));
+
     //public static final RegistryObject<Block> DOM_BLOCK = registerBlock("dom_block",() -> new DomBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));
     //public static final RegistryObject<Block> SUB_BLOCK = registerBlock("sub_block",() -> new SubBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));
-    public static final RegistryObject<Block> MAIN_ALTAR_PEDESTAL = registerBlock("altar_pedestal",() -> new VoidAltarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));
-    public static final RegistryObject<Block> SIDE_ALTAR_PEDESTAL = registerBlock("altar_pedestal_side",() -> new PedestalBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));
+    
+    public static final RegistryObject<Block> VOID_ALTAR = registerBlock("void_altar",() -> new VoidAltarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));
+    public static final RegistryObject<Block> VOID_PEDESTAL = registerBlock("void_pedestal",() -> new VoidPedestalBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));
+
+    public static final RegistryObject<Block> PEDESTAL = registerBlock("pedestal",() -> new PedestalBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));
+
     //public static final RegistryObject<Block> SPECIAL_FURNACE = registerBlock("special_furnace",() -> new SpecialFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));
     //public static final RegistryObject<Block> ABYSSALBOX = registerBlock("abyssal_container",()-> new AbyssalContainer(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
 

@@ -1,5 +1,8 @@
 package net.voidkin.voidkin.sounds;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.JukeboxSong;
@@ -61,5 +64,16 @@ public class ModSounds {
         return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID, name)));
     }
     public static void register(IEventBus eventBus){SOUND_EVENTS.register(eventBus);}
+    private static Holder.Reference<SoundEvent> registerForHolder(String pName) {
+        return registerForHolder(ResourceLocation.withDefaultNamespace(pName));
+    }
+
+    private static Holder.Reference<SoundEvent> registerForHolder(ResourceLocation pName) {
+        return registerForHolder(pName, pName);
+    }
+
+    private static Holder.Reference<SoundEvent> registerForHolder(ResourceLocation pName, ResourceLocation pLocation) {
+        return Registry.registerForHolder(BuiltInRegistries.SOUND_EVENT, pName, SoundEvent.createVariableRangeEvent(pLocation));
+    }
 
 }

@@ -97,7 +97,7 @@ public class VoidAltarBlock extends BaseEntityBlock {
                 //LogUtils.getLogger().debug("PINGING");
                 //return ItemInteractionResult.SUCCESS;
             }
-            if(pStack.is(ModBlocks.SIDE_ALTAR_PEDESTAL.get().asItem())){
+            if(pStack.is(ModBlocks.VOID_PEDESTAL.get().asItem())){
                 for(Vector2i offset : VoidAltarBlockEntity.offsets) {
                     //altar.offsets.forEach(offset2 ->{
                     if (isPositionEmpty(pLevel, pPos.offset(offset.x, 0, offset.y))) {
@@ -120,7 +120,7 @@ public class VoidAltarBlock extends BaseEntityBlock {
 
             }
 
-            if (!pLevel.isClientSide) {
+            if (!pLevel.isClientSide()) {
                 BlockEntity entity = pLevel.getBlockEntity(pPos);
                 if(entity instanceof VoidAltarBlockEntity) {
                     //NetworkHooks.openScreen(((ServerPlayer)pPlayer), (AltarPedestalBlockEntity)entity, pPos);
@@ -135,14 +135,17 @@ public class VoidAltarBlock extends BaseEntityBlock {
 
             if (altar.itemHandler.getStackInSlot(0).isEmpty() && !pStack.is(Items.AIR)){
                 altar.itemHandler.insertItem(0, pStack.copy(), false);
+                pLevel.sendBlockUpdated(altar.getBlockPos(),altar.getBlockState(),altar.getBlockState(),3);
                 LogUtils.getLogger().debug("String");
-                pStack.shrink(pStack.getCount());
+                pStack.shrink(1);
+                //pStack.shrink(pStack.getCount());
 
                 pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 3f);
             }else if(!altar.itemHandler.getStackInSlot(0).isEmpty()){
                 int fff = altar.itemHandler.getStackInSlot(0).getCount();
                 ItemStack stackOnPedestal = altar.itemHandler.getStackInSlot(0);
                         altar.itemHandler.extractItem(0, fff, false);
+                pLevel.sendBlockUpdated(altar.getBlockPos(),altar.getBlockState(),altar.getBlockState(),3);
                 //pPlayer.setItemInHand(InteractionHand.MAIN_HAND,stackOnPedestal);
 
 
@@ -164,10 +167,10 @@ public class VoidAltarBlock extends BaseEntityBlock {
         return level.getBlockState(pos).isAir();
     }
     private boolean hasSidePedestals(Level level, BlockPos pos){
-        return level.getBlockState(pos).is(ModBlocks.SIDE_ALTAR_PEDESTAL.get());
+        return level.getBlockState(pos).is(ModBlocks.VOID_PEDESTAL.get());
     }
     private void placePedestal(Level level, BlockPos pPos){
-        level.setBlockAndUpdate(pPos, ModBlocks.SIDE_ALTAR_PEDESTAL.get().defaultBlockState());
+        level.setBlockAndUpdate(pPos, ModBlocks.VOID_PEDESTAL.get().defaultBlockState());
     }
 
     @Override
@@ -184,11 +187,11 @@ public class VoidAltarBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        if(pLevel.isClientSide()) {
+        /*if(pLevel.isClientSide()) {
             return null;
-        }
+        }*/
 
-        return createTickerHelper(pBlockEntityType, ModBlockEntities.ALTAR_PEDESTAL.get(),
+        return createTickerHelper(pBlockEntityType, ModBlockEntities.VOID_ALTAR.get(),
                 (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
     }
 

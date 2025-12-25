@@ -3,11 +3,14 @@ package net.voidkin.voidkin.block.blockentity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -153,6 +156,8 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
             setChanged(level, pos, pState);
 
             if(hasCraftingFinished()){
+                spawnParticleRing(ParticleTypes.FLASH);
+
                 craftItem();
                 resetProgress();
             }
@@ -167,10 +172,43 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
         maxProgress = DEFAULT_MAX_PROGRESS;
     }
 
+    private void spawnParticleRing(ParticleOptions particle) {
+        if (level == null) return;
+
+        double centerX = this.getBlockPos().getX() + 0.5;
+        double centerY = this.getBlockPos().getY() + 1.1;
+        double centerZ = this.getBlockPos().getZ() + 0.5;
+
+        // Progress-based animation
+        float progressRatio = (float) progress / maxProgress;
+        float radius = 1.5f + Mth.sin(progressRatio * Mth.PI) * 0.4f;
+
+        // Rotation over time
+        float time = (level.getGameTime() + level.getRandom().nextFloat()) * 0.1f;
+
+        int particleCount = 12;
+
+        for (int i = 0; i < particleCount; i++) {
+            double angle = time + (Math.PI * 2 * i / particleCount);
+
+            double x = centerX + Math.cos(angle) * radius;
+            double z = centerZ + Math.sin(angle) * radius;
+
+            level.addParticle(particle, // or ParticleTypes.SOUL_FIRE_FLAME
+                    x,
+                    centerY,
+                    z,
+                    0,
+                    0.01,
+                    0
+            );
+        }
+    }
     private void craftItem() {
         Optional<RecipeHolder<CrystallizerRecipe>> recipe = getCurrentRecipe();
         ItemStack result = recipe.get().value().output();
 
+        //spawnParticleRing(ParticleTypes.SONIC_BOOM);
         inv.extractItem(INPUT_SLOT, 1, false);
         inv.setStackInSlot(OUTPUT_SLOT, new ItemStack(result.getItem(),
                 this.inv.getStackInSlot(OUTPUT_SLOT).getCount() + result.getCount()));
@@ -182,6 +220,15 @@ public class CrystallizerBlockEntity extends BlockEntity implements MenuProvider
 
     private void increaseCraftingProgress() {
         progress++;
+        /*spawnParticleRing(ParticleTypes.LAVA);
+        level.addParticle(ParticleTypes.SOUL,
+                this.getBlockPos().getX(),
+                this.getBlockPos().getY() + 1.1,
+                this.getBlockPos().getZ(),
+                0,
+                0.2,
+                0
+        );*/
     }
 
     private boolean isOutputSlotEmptyOrReceivable() {

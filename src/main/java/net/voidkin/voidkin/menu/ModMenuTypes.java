@@ -26,10 +26,14 @@ public class ModMenuTypes {
             registerMenuType("dom_menu", DomMenu::new);
     public static final RegistryObject<MenuType<SubMenu>> SUB_MENU =
             registerMenuType("sub_menu", SubMenu::new);*/
-    public static final RegistryObject<MenuType<AltarMenu>> MAIN_ALTAR_MENU =
-            registerMenuType("main_altar_menu", AltarMenu::new);
-    public static final RegistryObject<MenuType<PedestalMenu>> SIDE_ALTAR_MENU =
-            registerMenuType("side_altar_menu", PedestalMenu::new);
+
+    public static final RegistryObject<MenuType<VoidAltarMenu>> VOID_ALTAR_MENU =
+            registerMenuType("void_altar_menu", VoidAltarMenu::new);
+    public static final RegistryObject<MenuType<VoidPedestalMenu>> VOID_PEDESTAL_MENU =
+            registerMenuType("void_pedestal_menu", VoidPedestalMenu::new);
+
+    public static final RegistryObject<MenuType<PedestalMenu>> PEDESTAL_MENU =
+            registerMenuType("pedestal_menu", PedestalMenu::new);
 
 
     public static final RegistryObject<MenuType<WarTurtleMenu>> WAR_TURTLE_MENU =

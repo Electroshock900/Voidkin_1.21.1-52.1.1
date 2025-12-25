@@ -4,10 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -34,6 +31,7 @@ import net.voidkin.voidkin.entity.ModEntities;
 import net.voidkin.voidkin.fluid.ModFluidTypes;
 import net.voidkin.voidkin.fluid.ModFluids;
 import net.voidkin.voidkin.item.ModItems;
+import net.voidkin.voidkin.item.curios.VoidkinCurios;
 import net.voidkin.voidkin.menu.ModMenuTypes;
 import net.voidkin.voidkin.particles.ModParticles;
 import net.voidkin.voidkin.recipe.ModRecipes;
@@ -42,6 +40,9 @@ import net.voidkin.voidkin.util.*;
 
 import net.voidkin.voidkin.worldgen.biomes.ModTerraBlender;
 import org.slf4j.Logger;
+import top.theillusivec4.curios.api.CuriosCapability;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.capability.ICurio;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(VoidkinMod.MODID)
@@ -66,6 +67,7 @@ public class VoidkinMod
     // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
     public static final RegistryObject<Item> EXAMPLE_ITEM = ITEMS.register("example_item", () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build())));
+
     // Creates a creative tab with the id "examplemod:example_tab" for the example item, that is placed after the combat tab
     public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.COMBAT)
@@ -120,10 +122,31 @@ public class VoidkinMod
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
+        //modEventBus.addListener(this::registerCapabilities);
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
+    /*public void registerCapabilities(final RegisterCapabilitiesEvent evt) {
+        evt.register(
+
+                CuriosCapability.ITEM,
+                (stack, context) -> new ICurio() {
+
+                    @Override
+                    public ItemStack getStack() {
+                        return stack;
+                    }
+
+                    @Override
+                    public void curioTick(SlotContext slotContext) {
+                        // ticking logic here
+                    },
+                    VoidkinCurios.AXEL_RING;
+                }
+        );
+    }*/
+
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {

@@ -9,6 +9,7 @@ import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.voidkin.voidkin.util.ModTags;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -20,6 +21,11 @@ public class ModItemTagGenerator extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
+        this.tag(ModTags.Items.CHAKRAM_ENCHANTABLE)
+                .add(ModItems.CHAKRAM.get());
+        this.tag(ItemTags.TRIDENT_ENCHANTABLE)
+                .add(ModItems.CHAKRAM.get());
+
         this.tag(ItemTags.TRIMMABLE_ARMOR)
                 .add(
                         ModItems.AMETHYST_HELMET.get(),

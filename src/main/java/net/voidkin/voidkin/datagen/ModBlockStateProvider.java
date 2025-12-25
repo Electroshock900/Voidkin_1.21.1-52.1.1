@@ -107,8 +107,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
 
     //simpleBlockWithItem(ModBlocks.POLISHER.get(), new ModelFile.UncheckedModelFile(modLoc("block/polisher")));
-    //simpleBlockWithItem(ModBlocks.MAIN_ALTAR_PEDESTAL.get(), new ModelFile.UncheckedModelFile(modLoc("block/altar_pedestal")));
-//    simpleBlock(ModBlocks.AB.get(), new ModelFile.UncheckedModelFile(modLoc("block/altar_pedestal")));
+    //simpleBlockWithItem(ModBlocks.VOID_ALTAR.get(), new ModelFile.UncheckedModelFile(modLoc("block/void_altar")));
+//    simpleBlock(ModBlocks.AB.get(), new ModelFile.UncheckedModelFile(modLoc("block/void_altar")));
     //blockItem(ModBlocks.BLOOD_CONGEALED);
     //blockItem(ModBlocks.BLOOD_COAGULATED);
 

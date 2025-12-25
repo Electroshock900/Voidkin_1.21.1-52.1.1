@@ -12,9 +12,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.voidkin.voidkin.VoidkinMod;
-import net.voidkin.voidkin.block.blockentity.renderer.AltarBlockEntityRenderer;
+import net.voidkin.voidkin.block.blockentity.renderer.PedestalBlockEntityRenderer;
 import net.voidkin.voidkin.block.blockentity.renderer.PolisherBlockEntityRenderer;
-import net.voidkin.voidkin.block.blockentity.renderer.SideAltarBlockEntityRenderer;
+//import net.voidkin.voidkin.block.blockentity.renderer.SideAltarBlockEntityRenderer;
+import net.voidkin.voidkin.block.blockentity.renderer.VoidAltarBlockEntityRenderer;
+import net.voidkin.voidkin.block.blockentity.renderer.VoidPedestalBlockEntityRenderer;
 import net.voidkin.voidkin.entity.ModModelLayers;
 import net.voidkin.voidkin.entity.boats.ModBoatRenderer;
 import net.voidkin.voidkin.entity.model.*;
@@ -88,8 +90,10 @@ public class ModEventBusClientEvents {
         MenuScreens.register(ModMenuTypes.CRYSTALLIZER_MENU.get(), CrystallizerScreen::new);
         /*MenuScreens.register(ModMenuTypes.DOM_MENU.get(), DomScreen::new);
         MenuScreens.register(ModMenuTypes.SUB_MENU.get(), SubScreen::new);*/
-        MenuScreens.register(ModMenuTypes.MAIN_ALTAR_MENU.get(), AltarScreen::new);
-        MenuScreens.register(ModMenuTypes.SIDE_ALTAR_MENU.get(), PedestalScreen::new);
+
+        MenuScreens.register(ModMenuTypes.VOID_ALTAR_MENU.get(), VoidAltarScreen::new);
+        MenuScreens.register(ModMenuTypes.VOID_PEDESTAL_MENU.get(), VoidPedestalScreen::new);
+        MenuScreens.register(ModMenuTypes.PEDESTAL_MENU.get(), PedestalScreen::new);
 
 
         MenuScreens.register(ModMenuTypes.WAR_TURTLE_MENU.get(), WarTurtleScreen::new);
@@ -129,8 +133,9 @@ public class ModEventBusClientEvents {
         event.registerBlockEntityRenderer(ModBlockEntities.POLISHER_BLOCK_ENTITY.get(), PolisherBlockEntityRenderer::new);
         //event.registerBlockEntityRenderer(ModBlockEntities.SPECIAL_FURNACE_BLOCK_ENTITY.get(), SpecialFurnaceBlockEntityRenderer::new);
         //event.registerBlockEntityRenderer(ModBlockEntities.DOM_BE.get(), DomBER::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.ALTAR_PEDESTAL.get(), AltarBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.SIDE_ALTAR_PEDESTAL.get(), SideAltarBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.PEDESTAL.get(), PedestalBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.VOID_ALTAR.get(), VoidAltarBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.VOID_PEDESTAL.get(), VoidPedestalBlockEntityRenderer::new);
         //event.registerBlockEntityRenderer(ModBlockEntities.ABE.get(), AltarBER::new);
 
         event.registerBlockEntityRenderer(ModBlockEntities.MOD_SIGN.get(), SignRenderer::new);

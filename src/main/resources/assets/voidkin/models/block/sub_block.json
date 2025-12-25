@@ -4,8 +4,8 @@
 	"parent": "sub_block",
 	"texture_size": [128, 128],
 	"textures": {
-		"0": "voidkin:block/altar_pedestal",
-		"particle": "voidkin:block/altar_pedestal"
+		"0": "voidkin:block/void_altar",
+		"particle": "voidkin:block/void_altar"
 	},
 	"elements": [
 		{

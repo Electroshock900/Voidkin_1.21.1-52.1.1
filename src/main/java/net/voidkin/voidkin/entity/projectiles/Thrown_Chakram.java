@@ -1,15 +1,15 @@
 package net.voidkin.voidkin.entity.projectiles;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.voidkin.voidkin.damage_types.ModDamageTypes;
 import net.voidkin.voidkin.entity.ModEntities;
 import net.voidkin.voidkin.item.ModItems;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -25,10 +25,11 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.voidkin.voidkin.util.ModDamageSources;
+import net.voidkin.voidkin.damage_sources.ModDamageSources;
 
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class Thrown_Chakram extends AbstractArrow {
     private static final EntityDataAccessor<Byte> ID_LOYALTY = SynchedEntityData.defineId(Thrown_Chakram.class, EntityDataSerializers.BYTE);
@@ -48,17 +49,22 @@ public class Thrown_Chakram extends AbstractArrow {
 
     }
     public Thrown_Chakram(LivingEntity shooter, Level level){
-        super(ModEntities.CHAKRAM.get(), shooter, level, new ItemStack(ModItems.CHAKRAM.get()),null);
+        super(ModEntities.CHAKRAM.get(), shooter, level, new ItemStack(ModItems.CHAKRAM.get()),new ItemStack(ModItems.CHAKRAM.get()));
     }
     public Thrown_Chakram(Level level, LivingEntity livingEntity, ItemStack itemStack) {
-        super(ModEntities.CHAKRAM.get(), livingEntity, level,new ItemStack(ModItems.CHAKRAM.get()), null);
+        super(ModEntities.CHAKRAM.get(), livingEntity, level,new ItemStack(ModItems.CHAKRAM.get()), new ItemStack(ModItems.CHAKRAM.get()));
         this.ChakramItem = itemStack.copy();
-        this.entityData.set(ID_LOYALTY, (byte)EnchantmentHelper.getEnchantmentLevel(Enchantments.LOYALTY.getOrThrow(level),livingEntity));
+        this.entityData.set(ID_LOYALTY, this.getLoyaltyFromItem(itemStack));
+        //this.entityData.set(ID_LOYALTY, (byte)EnchantmentHelper.getEnchantmentLevel(Enchantments.LOYALTY.getOrThrow(level),livingEntity));
         this.entityData.set(ID_FOIL, itemStack.hasFoil());
     }
 
     public Thrown_Chakram(EntityType<Thrown_Chakram> thrownChakramEntityType, LivingEntity shooter, Level world) {
         super(thrownChakramEntityType,shooter,world,new ItemStack(ModItems.CHAKRAM.get()), new ItemStack(ModItems.CHAKRAM.get()));
+    }
+
+    private byte getLoyaltyFromItem(ItemStack pStack) {
+        return this.level() instanceof ServerLevel serverlevel ? (byte) Mth.clamp(EnchantmentHelper.getTridentReturnToOwnerAcceleration(serverlevel, pStack, this), 0, 127) : 0;
     }
 
 
@@ -78,6 +84,11 @@ public class Thrown_Chakram extends AbstractArrow {
         this.entityData.set(ID_LOYALTY, (byte) EnchantmentHelper.getEnchantmentLevel(Enchantments.LOYALTY.getOrThrow(world),entity));
         this.entityData.set(ID_FOIL, stack.hasFoil());
     }
+    public Thrown_Chakram(Level pLevel, double pX, double pY, double pZ, ItemStack pPickupItemStack) {
+        super(ModEntities.CHAKRAM.get(), pX, pY, pZ, pLevel, pPickupItemStack, pPickupItemStack);
+        this.entityData.set(ID_LOYALTY, this.getLoyaltyFromItem(pPickupItemStack));
+        this.entityData.set(ID_FOIL, pPickupItemStack.hasFoil());
+    }
 
 
     public void tick() {
@@ -92,26 +103,26 @@ public class Thrown_Chakram extends AbstractArrow {
         int i = this.entityData.get(ID_LOYALTY);
         if (i > 0 && (this.dealtDamage || this.isNoPhysics()) && entity != null) {
             if (!this.isAcceptibleReturnOwner()) {
-                if (!this.level().isClientSide && this.pickup == Pickup.ALLOWED) {
+                if (!this.level().isClientSide && this.pickup == AbstractArrow.Pickup.ALLOWED) {
                     this.spawnAtLocation(this.getPickupItem(), 0.1F);
                 }
-                this.makeParticle(13);
+
                 this.discard();
             } else {
                 this.setNoPhysics(true);
                 Vec3 vec3 = entity.getEyePosition().subtract(this.position());
-                this.setPosRaw(this.getX(), this.getY() + vec3.y * 0.015D * (double)i, this.getZ());
+                this.setPosRaw(this.getX(), this.getY() + vec3.y * 0.015 * (double)i, this.getZ());
                 if (this.level().isClientSide) {
                     this.yOld = this.getY();
                 }
 
-                double d0 = 0.05D * (double)i;
-                this.setDeltaMovement(this.getDeltaMovement().scale(0.95D).add(vec3.normalize().scale(d0)));
+                double d0 = 0.05 * (double)i;
+                this.setDeltaMovement(this.getDeltaMovement().scale(0.95).add(vec3.normalize().scale(d0)));
                 if (this.clientSideReturnChakramTickCount == 0) {
                     this.playSound(SoundEvents.TRIDENT_RETURN, 10.0F, 1.0F);
                 }
 
-                ++this.clientSideReturnChakramTickCount;
+                this.clientSideReturnChakramTickCount++;
             }
         }
 
@@ -152,31 +163,41 @@ public class Thrown_Chakram extends AbstractArrow {
     protected void onHitEntity(EntityHitResult p_37573_) {
         Entity entity = p_37573_.getEntity();
         float f = 8.0F;
-        if (entity instanceof LivingEntity livingentity) {
-            f += EnchantmentHelper.modifyDamage((ServerLevel) this.level(),this.ChakramItem, livingentity, ModDamageSources.CHAKRAM,3.0F);
-        }
 
-        Entity entity1 = this.getOwner();
-        DamageSource damagesource = this.damageSources().trident(this, (Entity)(entity1 == null ? this : entity1));
-        this.dealtDamage = true;
-        SoundEvent soundevent = SoundEvents.TRIDENT_HIT;
-        if (entity.hurt(damagesource, f)) {
-            if (entity.getType() == EntityType.ENDERMAN) {
-                return;
+
+            Entity entity1 = this.getOwner();
+            DamageSource damagesource = ModDamageTypes.getEntityDamageSource(this.level(),ModDamageTypes.CHAKRAMS,this.getOwner());
+                    //this.damageSources().source(this, (Entity) (entity1 == null ? this : entity1));
+        if(this.level() instanceof ServerLevel level) {
+            if (entity instanceof LivingEntity livingentity) {
+                f +=
+                        EnchantmentHelper.modifyDamage(level,
+                                this.ChakramItem,
+                                livingentity,
+                                damagesource,
+                                3.0F);
             }
+        }
+            this.dealtDamage = true;
+            SoundEvent soundevent = SoundEvents.TRIDENT_HIT;
+            if (entity.hurt(damagesource, f)) {
+                if (entity.getType() == EntityType.ENDERMAN) {
+                    return;
+                }
+                if(this.level() instanceof ServerLevel level) {
+                    if (entity instanceof LivingEntity livingEntity) {
+                        //LivingEntity livingentity1 = (LivingEntity) entity;
+                        //if (entity1 instanceof LivingEntity) {
+                        EnchantmentHelper.doPostAttackEffects(level, livingEntity, ModDamageTypes.getEntityDamageSource(livingEntity.level(),ModDamageTypes.CHAKRAMS,this.getOwner()));
+                        //EnchantmentHelper.doPostDamageEffects((LivingEntity)entity1, livingentity1);
 
-            if (entity instanceof LivingEntity) {
-                LivingEntity livingentity1 = (LivingEntity)entity;
-                if (entity1 instanceof LivingEntity) {
-                    EnchantmentHelper.doPostAttackEffects((ServerLevel) this.level(),livingentity1, ModDamageSources.CHAKRAM);
-                    //
-                    // EnchantmentHelper.doPostDamageEffects((LivingEntity)entity1, livingentity1);
+
+                        this.doPostHurtEffects(livingEntity);
+                    }
 
                 }
-
-                this.doPostHurtEffects(livingentity1);
             }
-        }
+
         this.setDeltaMovement(this.getDeltaMovement().multiply(-0.01D, -0.1D, -0.01D));
         this.playSound(soundevent, 1.0F,  1.0F);
     }
@@ -186,14 +207,12 @@ public class Thrown_Chakram extends AbstractArrow {
     }
 
 
+    @Override
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
-        this.entityData.set(ID_LOYALTY, (byte)0);
-        this.entityData.set(ID_FOIL, false);
+        pBuilder.define(ID_LOYALTY, (byte)0);
+        pBuilder.define(ID_FOIL, false);
     }
-
-
-
 
 
 
@@ -215,8 +234,7 @@ public class Thrown_Chakram extends AbstractArrow {
         }*/
 
         this.dealtDamage = tag.getBoolean("DealtDamage");
-        this.entityData.set(ID_LOYALTY, (byte)EnchantmentHelper.getEnchantmentLevel(Enchantments.LOYALTY.getOrThrow(this.level())
-                ,(LivingEntity) this.getOwner()));
+        this.entityData.set(ID_LOYALTY, this.getLoyaltyFromItem(this.getPickupItemStackOrigin()));
     }
 
     public void addAdditionalSaveData(CompoundTag tag) {

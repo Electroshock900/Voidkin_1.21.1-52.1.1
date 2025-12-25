@@ -18,6 +18,7 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentTarget;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.item.enchantment.effects.AddValue;
 import net.minecraft.world.item.enchantment.effects.DamageImmunity;
 import net.minecraft.world.item.enchantment.effects.ReplaceDisk;
 import net.minecraft.world.level.block.Blocks;
@@ -49,6 +50,9 @@ public class ModEnchantments {
             ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID,"blood_walker"));
     public static ResourceKey<Enchantment> LAVA_WALKER = ResourceKey.create(Registries.ENCHANTMENT,
             ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID,"lava_walker"));
+
+    public static ResourceKey<Enchantment> FLAMEPORTATION = ResourceKey.create(Registries.ENCHANTMENT,
+            ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID, "flameportation"));
     //public static RegistryObject<Enchantment> DESTRUCTION;
 
     public static void bootstrap(BootstrapContext<Enchantment> context) {
@@ -67,6 +71,7 @@ public class ModEnchantments {
                 .exclusiveWith(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
                         EnchantmentTarget.VICTIM, new LightningStrikerEnchantment()));
+        
         register(
                 context,
                 BLOOD_WALKER,
@@ -113,6 +118,7 @@ public class ModEnchantments {
                                 )
                         )
         );
+
         register(
                 context,
                 LAVA_WALKER,
@@ -158,6 +164,23 @@ public class ModEnchantments {
                                         LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnGround(true))
                                 )
                         )
+        );
+
+        register(
+                context,
+                FLAMEPORTATION,
+                Enchantment.enchantment(
+                                Enchantment.definition(
+                                        items.getOrThrow(ItemTags.TRIDENT_ENCHANTABLE),
+                                        5,
+                                        3,
+                                        Enchantment.dynamicCost(12, 7),
+                                        Enchantment.constantCost(50),
+                                        2,
+                                        EquipmentSlotGroup.MAINHAND
+                                )
+                        )
+                        .withEffect(EnchantmentEffectComponents.TRIDENT_RETURN_ACCELERATION, new AddValue(LevelBasedValue.perLevel(1.0F)))
         );
     }
     private static void register(BootstrapContext<Enchantment> pContext, ResourceKey<Enchantment> pKey, Enchantment.Builder pBuilder) {

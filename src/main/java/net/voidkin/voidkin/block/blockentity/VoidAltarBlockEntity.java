@@ -5,8 +5,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -34,7 +36,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.voidkin.voidkin.block.ModBlockEntities;
-import net.voidkin.voidkin.menu.AltarMenu;
+import net.voidkin.voidkin.menu.VoidAltarMenu;
 import net.voidkin.voidkin.particles.ModParticles;
 import net.voidkin.voidkin.recipe.AltarRecipe;
 import net.voidkin.voidkin.recipe.ModRecipes;
@@ -47,6 +49,8 @@ import org.joml.Vector2i;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.openjdk.nashorn.internal.codegen.OptimisticTypesPersistence.load;
 
 public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
     public static List<Vector2i> offsets = List.of(
@@ -62,10 +66,10 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
 
     public final ItemStackHandler itemHandler = new ItemStackHandler(9) {
         @Override
-        protected void onContentsChanged(int slot) {
+        public void onContentsChanged(int slot) {
             setChanged();
-            if(!level.isClientSide()) {
-                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            if(!level.isClientSide) {
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
             }
         }
     };
@@ -80,22 +84,25 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
     private int maxProgress = 78;
 
     public VoidAltarBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(ModBlockEntities.ALTAR_PEDESTAL.get(), pPos, pBlockState);
+        super(ModBlockEntities.VOID_ALTAR.get(), pPos, pBlockState);
         this.data = new ContainerData() {
             @Override
             public int get(int pIndex) {
                 return switch (pIndex) {
-                    case 0 -> VoidAltarBlockEntity.this.progress;
-                    case 1 -> VoidAltarBlockEntity.this.maxProgress;
-                    default -> 0;
+                    case 0 -> progress;
+                        case 1 -> maxProgress;
+                        default -> 0;
+
+
                 };
             }
 
             @Override
             public void set(int pIndex, int pValue) {
                 switch (pIndex) {
-                    case 0 -> VoidAltarBlockEntity.this.progress = pValue;
-                    case 1 -> VoidAltarBlockEntity.this.maxProgress = pValue;
+                    case 0 -> progress = pValue;
+                    case 1 -> maxProgress = pValue;
+
                 }
             }
 
@@ -107,12 +114,28 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public ItemStack getRenderStack() {
-        //if(itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty()) {
+        if(itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty()) {
             return itemHandler.getStackInSlot(INPUT_SLOT);
-        //} else {*/
-           // return itemHandler.getStackInSlot(OUTPUT_SLOT);
-        //}
+        } else {
+            return itemHandler.getStackInSlot(OUTPUT_SLOT);
+        }
     }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
+        CompoundTag tag = super.getUpdateTag(pRegistries);
+        tag.putInt("altar_main.progress", progress);
+        tag.putInt("altar_main.max_progress", maxProgress);
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider holders) {
+        super.handleUpdateTag(tag, holders);
+        progress = tag.getInt("altar_main.progress");
+        maxProgress = tag.getInt("altar_main.max_progress");
+    }
+
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
@@ -145,13 +168,13 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.voidkin.altar_pedestal");
+        return Component.translatable("block.voidkin.void_altar");
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        return new AltarMenu(pContainerId, pPlayerInventory, this, this.data);
+        return new VoidAltarMenu(pContainerId, pPlayerInventory, this, this.data);
     }
 
     @Override
@@ -170,78 +193,42 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
         progress = pTag.getInt("altar_main.progress");
         maxProgress = pTag.getInt("altar_main.max_progress");
     }
-/*
-    public void tick(Level pLevel, BlockPos pPos, BlockState pState) {
+    private void clientTick(Level level, BlockPos pos, BlockState state) {
+        int maxProgress2 = 78;
+        if (this.progress > 0 && this.progress < maxProgress2) {
+            LogUtils.getLogger().error("CLIENT TICK " + progress);
+            LogUtils.getLogger().error("CLIENT TICK MAX " + maxProgress);
 
-        Optional<RecipeHolder<AltarRecipe>> recipe = getCurrentRecipe();
-        if (recipe.isEmpty()) return;
-        if (!hasPedestals()){
-            return;
-        }
-        if(!pedestalsItems()){
-            return;
-        }
-       // if(!level.isClientSide()){
-       // if (hasPedestals()) {
-            if(!level.isClientSide()) {
-
-            }
-            if (!hasRecipe()) {
-                return;
-            }
-
-                //pLevel.addParticle(ParticleTypes.LAVA, Mth.sin((float) pPos.getX()), pPos.getY()+1, Mth.sin((float) pPos.getX() + 0.5F), 0, 0, 0);
-
-            if(!mainItem()) {
-                return;
-            }
-        //}
-        if(hasPedestals()) {
-            if(hasRecipe()){
-            level.addParticle(ModParticles.VOID_FLAME.get(),
-                    this.getBlockPos().getX() + 0.5,
-                    this.getBlockPos().getY() + 1,
-                    this.getBlockPos().getZ() + 0.5,
+            spawnParticleRing(ParticleTypes.SOUL);
+            /*level.addParticle(ParticleTypes.SOUL,
+                    getBlockPos().getX() + 0.5,
+                    getBlockPos().getY() + 1.1,
+                    getBlockPos().getZ() + 0.5,
                     0,
                     0,
-                    0
+                    0);*/
 
-            );
-            if (mainItem() && pedestalsItems()){
-                setChanged(pLevel,pPos,pState);
-                removefromSides();
-                exchangeItemInMainPedestal();
-            }
-            }
         }
-            //if (hasPedestals()) {
-               // if(mainItem()){
-                    //removefromSides();
-                    //exchangeItemInMainPedestal();
-                //if (hasRecipe()) {}
-                   /* increaseCraftingProgress();
-                    setChanged(pLevel, pPos, pState);
-                    removefromSides();
-                    exchangeItemInMainPedestal();
-                    //LogUtils
+        //else{LogUtils.getLogger().debug("FAILED "+progress);}
+    }
 
-                    if (hasProgressFinished()) {
-                        craftItem();
-                        resetProgress();
-                    }
-                } else {
-                    resetProgress();
-                }
-                //}
-            //}
-        //}
-
-
-    }*/
 
     public void tick(Level level, BlockPos pos, BlockState state) {
-        if (level.isClientSide) return;
 
+
+        if (level.isClientSide) {
+            clientTick(level, pos, state);
+        } else {
+            serverTick(level, pos, state);
+
+        }
+    }
+    private void serverTick(Level level, BlockPos pos, BlockState state) {
+
+        if(itemHandler.getStackInSlot(0).isEmpty()){
+            resetProgress();
+            return;
+        }
         // 1. Must have all pedestal blocks
         if (!hasPedestals()) return;
 
@@ -252,7 +239,7 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
         AltarRecipe recipe = recipeOpt.get().value();
 
         // 3. Main altar item must match
-        if (!recipe.getIngredients().getFirst().test(itemHandler.getStackInSlot(0))) {
+        if (!recipe.getIngredients().getFirst().test(this.itemHandler.getStackInSlot(0)) || itemHandler.getStackInSlot(0).isEmpty()) {
             resetProgress();
             return;
         }
@@ -265,20 +252,19 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
 
         // 5. Progress crafting
         increaseCraftingProgress();
-
         setChanged(level, pos, state);
+        level.sendBlockUpdated(pos,state,state,3);
 
         if (hasProgressFinished()) {
             craft(recipe);
             resetProgress();
         }
-        if((level.isClientSide() && hasPedestals())){
-            spawnParticleRing();
-        }
     }
 
     private void resetProgress() {
         progress = 0;
+        setChanged();
+        level.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),3);
     }
 
 
@@ -297,7 +283,7 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
     return canInsertAmountIntoOutputSlot(result.getCount()) && canInsertItemIntoOutputSlot(result.getItem());
     }
 
-    private Optional<RecipeHolder<AltarRecipe>> g2etCurrentRecipe() {
+    private Optional<RecipeHolder<AltarRecipe>> getCurrentRecipe() {
         return this.level.getRecipeManager()
                 .getRecipeFor(ModRecipes.ALTAR_TYPE.get(), new AltarRecipeInput(
                 itemHandler.getStackInSlot(0),
@@ -310,7 +296,7 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
                 }).toList()
         ), level);
     }
-    private Optional<RecipeHolder<AltarRecipe>> getCurrentRecipe() {
+    private Optional<RecipeHolder<AltarRecipe>> getCurrentRecipe2() {
         if (level == null) return Optional.empty();
 
         return level.getRecipeManager().getRecipeFor(
@@ -359,42 +345,41 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
     }
     private void craft(AltarRecipe recipe) {
         // Remove main item
-        this.itemHandler.extractItem(0, 1, false);
+        this.itemHandler.setStackInSlot(0, ItemStack.EMPTY);
+        //itemHandler.extractItem(0, 1, false);
+        setChanged();
+        level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+        //itemHandler.setStackInSlot(0,ItemStack.EMPTY);
 
         // Clear pedestal items
         for (Vector2i offset : offsets) {
-            BlockEntity be = level.getBlockEntity(worldPosition.offset(offset.x, 0, offset.y));
+            BlockEntity be = this.level.getBlockEntity(worldPosition.offset(offset.x, 0, offset.y));
             if (be instanceof VoidPedestalBlockEntity pedestal) {
+                //pedestal.inventory.extractItem(0, 64, false);
+                pedestal.clearContent();
                 pedestal.inventory.setStackInSlot(0, ItemStack.EMPTY);
                 pedestal.setChanged();
+                level.sendBlockUpdated(
+                        pedestal.getBlockPos(),
+                        pedestal.getBlockState(),
+                        pedestal.getBlockState(),
+                        3
+                );
             }
         }
-
+        //spawnParticleRing(ParticleTypes.SOUL);
         // Insert result
         ItemStack result = recipe.output().copy();
-        this.itemHandler.insertItem(0, result, false);
+        setChanged();
+        itemHandler.insertItem(0, result, false);
+        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
     }
 
-
-    private void exchangeItemInMainPedestal(){
-        Optional<RecipeHolder<AltarRecipe>> recipe = getCurrentRecipe();
-        this.itemHandler.extractItem(0, 64, false);
-        recipe.ifPresent(altarRecipeRecipeHolder -> this.itemHandler.insertItem(0, altarRecipeRecipeHolder.value().output(), false));
-    }
     private void removefromSides(){
         offsets.forEach(offset -> ((VoidPedestalBlockEntity) level.getBlockEntity(this.getBlockPos().offset(offset.x, 0, offset.y)))
                 .inventory.setStackInSlot(0, ItemStack.EMPTY));
 
     }
-    /*private boolean mainItem(){
-        Optional<RecipeHolder<AltarRecipe>> recipe = getCurrentRecipe();
-
-        NonNullList<Ingredient> ing = recipe.get().value().getIngredients();
-
-        ItemStack itemStack = ing.getFirst().getItems()[0];
-        return this.itemHandler.getStackInSlot(0).is(itemStack.getItem());
-    }*/
-    /*
     private boolean hasItemInPedestal(Vector2i pPos, ItemLike pItem){
         Optional<RecipeHolder<AltarRecipe>> recipe = getCurrentRecipe();
         if(recipe.isEmpty()){
@@ -407,12 +392,14 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
             ItemStack itemStack = recipe.get().value().getItem(i);
         }
         ItemStack itemStack = recipe.get().value().getItem(i);
-        offsets.stream().allMatch(offset -> ((VoidPedestalBlockEntity) level.getBlockEntity(this.getBlockPos().offset(offset.x, 0, offset.y))).inventory.getStackInSlot(0)
-                .is(ing.get(1).test(itemStack)));
-        return ing.get()
+        return offsets.stream().allMatch(offset -> ((VoidPedestalBlockEntity) level.getBlockEntity(this.getBlockPos().offset(offset.x, 0, offset.y))).inventory.getStackInSlot(0)
+                .is(itemStack.getItem()))
 
-    }*/
-    /*private boolean pedestalsItems() {
+                ;
+
+
+    }
+    private boolean pedestalsItems2() {
         Optional<RecipeHolder<AltarRecipe>> recipe = getCurrentRecipe();
 
         NonNullList<Ingredient> ing;
@@ -423,15 +410,14 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
         //new ItemStack((ItemLike) ing.get(1));
         if(hasRecipe() && recipe.isPresent()) {
             ing = recipe.get().value().getIngredients();
-            int i = 1;
-            for (i = 1; i < ing.size(); i++) {
+            for (int i = 1; i < ing.size(); i++) {
                 itemStack = new ItemStack((ItemLike) ing.get(i));
             }
         }
         ItemLike finalItemStack = itemStack.getItem();
         return offsets.stream().allMatch(offset -> hasItemInPedestal(offset, finalItemStack));
 
-    }*/
+    }
     private boolean pedestalsItems() {
         Optional<RecipeHolder<AltarRecipe>> recipe = getCurrentRecipe();
         List<Ingredient> ingredients = recipe.get().value().getIngredients();
@@ -448,15 +434,14 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
             ItemStack stack = pedestal.inventory.getStackInSlot(0);
             if (!ingredients.get(i).test(stack)) return false;
         }
-
         return true;
     }
 
     public boolean hasPedestals(){
-
+        //spawnParticleRing(ParticleTypes.DRAGON_BREATH);
         return offsets.stream().allMatch(offset ->
                 level.getBlockState(worldPosition.offset(offset.x, 0, offset.y))
-                        .is(ModBlocks.SIDE_ALTAR_PEDESTAL.get())
+                        .is(ModBlocks.VOID_PEDESTAL.get())
         );
     }
 
@@ -473,6 +458,7 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     private void increaseCraftingProgress() {
+        LogUtils.getLogger().error("Progress" + progress);
         progress++;
 
     }
@@ -485,12 +471,49 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    private void spawnParticleRing() {
+
+    @Override
+    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookup) {
+        //super.onDataPacket(connection, pkt, lookup);
+        CompoundTag tag = pkt.getTag();
+        if (tag != null) {
+            loadAdditional(tag, this.getLevel().registryAccess());
+        }
+    }
+
+    private void spawnParticleRing(ParticleOptions particle) {
         if (level == null) return;
 
-        double centerX = worldPosition.getX() + 0.5;
-        double centerY = worldPosition.getY() + 1.1;
-        double centerZ = worldPosition.getZ() + 0.5;
+        double cx = worldPosition.getX() + 0.5;
+        double cy = worldPosition.getY() + 1.1;
+        double cz = worldPosition.getZ() + 0.5;
+
+        float progressRatio = (float) progress / maxProgress;
+        float radius = 1.5f + Mth.sin(progressRatio * Mth.PI) * 0.4f;
+
+        float time = level.getGameTime() * 0.1f;
+        int count = 7;
+
+        for (int i = 0; i < count; i++) {
+            double angle = time + (Math.PI * 2 * i / count);
+
+            level.addParticle(
+                    particle,
+                    cx + Math.cos(angle) * radius,
+                    cy,
+                    cz + Math.sin(angle) * radius,
+                    0,
+                    1,
+                    0
+            );
+        }
+    }
+    private void spawnParticleRing2(ParticleOptions particle) {
+        if (level == null) return;
+
+        double centerX = getBlockPos().getX() + 0.5;
+        double centerY = getBlockPos().getY() + 1.1;
+        double centerZ = getBlockPos().getZ() + 0.5;
 
         // Progress-based animation
         float progressRatio = (float) progress / maxProgress;
@@ -499,7 +522,7 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
         // Rotation over time
         float time = (level.getGameTime() + level.getRandom().nextFloat()) * 0.1f;
 
-        int particleCount = 12;
+        int particleCount = 24;
 
         for (int i = 0; i < particleCount; i++) {
             double angle = time + (Math.PI * 2 * i / particleCount);
@@ -507,8 +530,7 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
             double x = centerX + Math.cos(angle) * radius;
             double z = centerZ + Math.sin(angle) * radius;
 
-            level.addParticle(
-                    ModParticles.VOID_FLAME.get(), // or ParticleTypes.SOUL_FIRE_FLAME
+            level.addParticle(particle, // or ParticleTypes.SOUL_FIRE_FLAME
                     x,
                     centerY,
                     z,

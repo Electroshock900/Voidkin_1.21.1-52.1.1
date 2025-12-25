@@ -4,23 +4,24 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
-import net.voidkin.voidkin.block.blockentity.VoidPedestalBlockEntity;
+import net.voidkin.voidkin.block.blockentity.PedestalBlockEntity;
 
 public class PedestalMenu extends AbstractContainerMenu {
-    public final VoidPedestalBlockEntity pedestalBlockEntity;
+    public final PedestalBlockEntity pedestalBlockEntity;
 
     public PedestalMenu(int pContainerId, Inventory inventory, FriendlyByteBuf extraData) {
         this(pContainerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public PedestalMenu(int pContainerId, Inventory inv, BlockEntity blockEntity) {
-        super(ModMenuTypes.SIDE_ALTAR_MENU.get(), pContainerId);
-        pedestalBlockEntity = ((VoidPedestalBlockEntity) blockEntity);
+        super(ModMenuTypes.PEDESTAL_MENU.get(), pContainerId);
+        pedestalBlockEntity = ((PedestalBlockEntity) blockEntity);
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
@@ -47,6 +48,9 @@ public class PedestalMenu extends AbstractContainerMenu {
 
     // THIS YOU HAVE TO DEFINE!
     private static final int TE_INVENTORY_SLOT_COUNT = 1;  // must be the number of slots you have!
+
+
+
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
         Slot sourceSlot = slots.get(pIndex);

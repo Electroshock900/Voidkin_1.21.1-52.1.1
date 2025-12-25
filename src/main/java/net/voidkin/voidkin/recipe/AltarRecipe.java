@@ -97,7 +97,7 @@ public record AltarRecipe(NonNullList<Ingredient> ingredients, ItemStack output)
         ).apply(inst, AltarRecipe::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, AltarRecipe> STREAM_CODEC =
-            StreamCodec.of(AltarRecipe.Serializer::toNetwork, AltarRecipe.Serializer::fromNetwork);
+            StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 
             /*StreamCodec.composite(
                         Ingredient.CONTENTS_STREAM_CODEC, AltarRecipe::inputItem,

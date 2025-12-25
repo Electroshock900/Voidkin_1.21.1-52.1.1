@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.voidkin.voidkin.block.blockentity.VoidPedestalBlockEntity;
+import net.voidkin.voidkin.block.blockentity.PedestalBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class PedestalBlock extends BaseEntityBlock {
@@ -46,7 +46,7 @@ public class PedestalBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new VoidPedestalBlockEntity(blockPos, blockState);
+        return new PedestalBlockEntity(blockPos, blockState);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class PedestalBlock extends BaseEntityBlock {
     @Override
     protected void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
         if(pState.getBlock() != pNewState.getBlock()) {
-            if(pLevel.getBlockEntity(pPos) instanceof VoidPedestalBlockEntity pedestalBlockEntity) {
+            if(pLevel.getBlockEntity(pPos) instanceof PedestalBlockEntity pedestalBlockEntity) {
                 Containers.dropContents(pLevel, pPos, pedestalBlockEntity);
                 pLevel.updateNeighbourForOutputSignal(pPos, this);
             }
@@ -68,7 +68,7 @@ public class PedestalBlock extends BaseEntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos,
                                               Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
-        if(pLevel.getBlockEntity(pPos) instanceof VoidPedestalBlockEntity pedestalBlockEntity) {
+        if(pLevel.getBlockEntity(pPos) instanceof PedestalBlockEntity pedestalBlockEntity) {
             if(pPlayer.isCrouching() && !pLevel.isClientSide()) {
                 ((ServerPlayer) pPlayer).openMenu(new SimpleMenuProvider(pedestalBlockEntity, Component.literal("Pedestal")), pPos);
                 return ItemInteractionResult.SUCCESS;

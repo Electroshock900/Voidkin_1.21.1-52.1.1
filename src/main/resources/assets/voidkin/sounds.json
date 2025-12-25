@@ -100,6 +100,14 @@
         "stream" : true
       }
     ]
+  },
+  "brighter": {
+    "sounds": [
+      {
+        "name": "voidkin:brighter",
+        "stream" : true
+      }
+    ]
   }
 
 }

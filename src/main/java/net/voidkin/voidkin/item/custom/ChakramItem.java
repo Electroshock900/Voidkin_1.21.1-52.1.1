@@ -1,10 +1,20 @@
 package net.voidkin.voidkin.item.custom;
 
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Position;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.fluids.FluidType;
 import net.voidkin.voidkin.entity.projectiles.Thrown_Chakram;
 import net.voidkin.voidkin.entity.ModEntities;
+import net.voidkin.voidkin.fluid.ModFluidTypes;
 import net.voidkin.voidkin.item.ModItems;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -24,7 +34,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class ChakramItem extends SwordItem {
+public class ChakramItem extends SwordItem implements ProjectileItem{
 
     public ChakramItem(Tier tier, int attack_damage, float attack_speed, Properties properties) {
         super(tier,
@@ -40,7 +50,7 @@ public class ChakramItem extends SwordItem {
         return super.useOnRelease(pStack);
     }
 
-    @Override
+    /*@Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pHand);
         pLevel.playSound((Player)null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), SoundEvents.FIRECHARGE_USE, SoundSource.NEUTRAL, 0.5F, 0.4F / (pLevel.getRandom().nextFloat() * 0.4F + 0.8F));
@@ -58,7 +68,7 @@ public class ChakramItem extends SwordItem {
 
         return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
     }
-
+*/
 
     public Thrown_Chakram createArrow(Level world, ItemStack ammoStack, LivingEntity shooter) {
         return new Thrown_Chakram(ModEntities.CHAKRAM.get(), shooter, world);
@@ -85,71 +95,85 @@ public class ChakramItem extends SwordItem {
 
 
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int p_43397_) {
-        if (entity instanceof Player player) {
-            int i = this.getUseDuration(stack) - p_43397_;
+    public int getUseDuration(ItemStack pStack, LivingEntity pEntity) {
+        return 72000;
+    }
+
+    @Override
+    public void releaseUsing(ItemStack pStack, Level pLevel, LivingEntity pEntityLiving, int pTimeLeft) {
+        if (pEntityLiving instanceof Player player) {
+            int i = this.getUseDuration(pStack, pEntityLiving) - pTimeLeft;
             if (i >= 10) {
-                int j = (int)EnchantmentHelper.getEnchantmentLevel(Enchantments.LOYALTY.getOrThrow(level), entity);
-                if (j <= 0 || player.isInWaterOrRain()) {
-                    if (!level.isClientSide) {
-                        /*stack.hurtAndBreak(1, player, (p_43388_) -> {
-                            p_43388_.broadcastBreakEvent(entity.getUsedItemHand());
-                        });*/
-                        if (j == 0) {
-                            Thrown_Chakram thrownChakram = new Thrown_Chakram(stack.is(ModItems.CHAKRAM.get()) ? ModEntities.CHAKRAM.get() : ModEntities.CHAKRAM.get(), level, player, stack);
-                            thrownChakram.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.5F, 1.0F);
-                            if (player.getAbilities().instabuild) {
-                                thrownChakram.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
-                            }
+                float f = EnchantmentHelper.getTridentSpinAttackStrength(pStack, player);
+                if (!(f > 0.0F) || player.isInWaterOrRain()) {
+                    if (!isTooDamagedToUse(pStack)) {
+                        Holder<SoundEvent> holder = EnchantmentHelper.pickHighestLevel(pStack, EnchantmentEffectComponents.TRIDENT_SOUND).orElse(SoundEvents.TRIDENT_THROW);
+                        if (!pLevel.isClientSide) {
+                            pStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(pEntityLiving.getUsedItemHand()));
+                            if (f == 0.0F) {
+                                Thrown_Chakram thrownchakram = new Thrown_Chakram(pLevel, player, pStack);
+                                thrownchakram.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.5F, 1.0F);
+                                if (player.hasInfiniteMaterials()) {
+                                    thrownchakram.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
+                                }
 
-                            level.addFreshEntity(thrownChakram);
-                            //level.playSound((Player)null, thrownChakram, SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
-                            if (!player.getAbilities().instabuild) {
-                                player.getInventory().removeItem(stack);
+                                pLevel.addFreshEntity(thrownchakram);
+                                pLevel.playSound(null, thrownchakram, holder.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
+                                if (!player.hasInfiniteMaterials()) {
+                                    player.getInventory().removeItem(pStack);
+                                }
                             }
                         }
-                    }
 
-                    player.awardStat(Stats.ITEM_USED.get(this));
-                    if (j > 0) {
-                        float f7 = player.getYRot();
-                        float f = player.getXRot();
-                        float f1 = -Mth.sin(f7 * ((float)Math.PI / 180F)) * Mth.cos(f * ((float)Math.PI / 180F));
-                        float f2 = -Mth.sin(f * ((float)Math.PI / 180F));
-                        float f3 = Mth.cos(f7 * ((float)Math.PI / 180F)) * Mth.cos(f * ((float)Math.PI / 180F));
-                        float f4 = Mth.sqrt(f1 * f1 + f2 * f2 + f3 * f3);
-                        float f5 = 3.0F * ((1.0F + (float)j) / 4.0F);
-                        f1 *= f5 / f4;
-                        f2 *= f5 / f4;
-                        f3 *= f5 / f4;
-                        player.push((double)f1, (double)f2, (double)f3);
-                        player.startAutoSpinAttack(20,2.0f,new ItemStack(stack.getItem()));
-                        //if (player.isOnGround()) {
-                        float f6 = 1.1999999F;
-                        player.move(MoverType.SELF, new Vec3(0.0D, (double)1.1999999F, 0.0D));
-                        //}
+                        player.awardStat(Stats.ITEM_USED.get(this));
+                        if (f > 0.0F) {
+                            float f7 = player.getYRot();
+                            float f1 = player.getXRot();
+                            float f2 = -Mth.sin(f7 * (float) (Math.PI / 180.0)) * Mth.cos(f1 * (float) (Math.PI / 180.0));
+                            float f3 = -Mth.sin(f1 * (float) (Math.PI / 180.0));
+                            float f4 = Mth.cos(f7 * (float) (Math.PI / 180.0)) * Mth.cos(f1 * (float) (Math.PI / 180.0));
+                            float f5 = Mth.sqrt(f2 * f2 + f3 * f3 + f4 * f4);
+                            f2 *= f / f5;
+                            f3 *= f / f5;
+                            f4 *= f / f5;
+                            player.push((double)f2, (double)f3, (double)f4);
+                            player.startAutoSpinAttack(20, 8.0F, pStack);
+                            if (player.onGround()) {
+                                float f6 = 1.1999999F;
+                                player.move(MoverType.SELF, new Vec3(0.0, 1.1999999F, 0.0));
+                            }
 
-                        SoundEvent soundevent;
-                        if (j >= 3) {
-                            soundevent = SoundEvents.FIRECHARGE_USE;
-                        } else if (j == 2) {
-                            soundevent = SoundEvents.FIRE_EXTINGUISH;
-                        } else {
-                            soundevent = SoundEvents.DRAGON_FIREBALL_EXPLODE;
+                            pLevel.playSound(null, player, holder.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
                         }
-
-                        level.playSound((Player)null, player, soundevent, SoundSource.PLAYERS, 1.0F, 1.0F);
                     }
-
                 }
             }
         }
     }
 
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
+        ItemStack itemstack = pPlayer.getItemInHand(pHand);
+        if (isTooDamagedToUse(itemstack)) {
+            return InteractionResultHolder.fail(itemstack);
+        } else if (EnchantmentHelper.getTridentSpinAttackStrength(itemstack, pPlayer) > 0.0F && (!pPlayer.isInFluidType(Fluids.LAVA.getFluidType()) || (!pPlayer.isInFluidType(ModFluidTypes.BLOOD_FLUID_TYPE.get())))) {
+            return InteractionResultHolder.fail(itemstack);
+        } else {
+            pPlayer.startUsingItem(pHand);
+            return InteractionResultHolder.consume(itemstack);
+        }
+    }
 
+    private static boolean isTooDamagedToUse(ItemStack pStack) {
+        return pStack.getDamageValue() >= pStack.getMaxDamage() - 1;
+    }
 
-
-
+    @Override
+    public Projectile asProjectile(Level pLevel, Position pPos, ItemStack pStack, Direction pDirection) {
+        Thrown_Chakram thrownchakram = new Thrown_Chakram(pLevel, pPos.x(), pPos.y(), pPos.z(), pStack.copyWithCount(1));
+        thrownchakram.pickup = AbstractArrow.Pickup.ALLOWED;
+        return thrownchakram;
+    }
 }
 
 

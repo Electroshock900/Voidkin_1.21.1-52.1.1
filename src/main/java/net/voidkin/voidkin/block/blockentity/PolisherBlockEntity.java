@@ -1,7 +1,9 @@
 package net.voidkin.voidkin.block.blockentity;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.voidkin.voidkin.block.ModBlockEntities;
 import net.voidkin.voidkin.menu.PolisherMenu;
@@ -149,7 +151,7 @@ public class PolisherBlockEntity extends BlockEntity implements MenuProvider {
 
     public void tick(Level pLevel, BlockPos pPos, BlockState pState) {
         if(hasRecipe()) {
-            level.addParticle(ParticleTypes.LAVA,pPos.getX(), pPos.getY(),pPos.getZ(), 0, 0.3, 0);
+            pLevel.addParticle(ParticleTypes.LAVA,pPos.getX(), pPos.getY(),pPos.getZ(), 0, 0.3, 0);
             increaseCraftingProgress();
             setChanged(pLevel, pPos, pState);
 
@@ -164,6 +166,39 @@ public class PolisherBlockEntity extends BlockEntity implements MenuProvider {
 
     private void resetProgress() {
         progress = 0;
+    }
+
+    private void spawnParticleRing(ParticleOptions particle) {
+        if (level == null) return;
+
+        double centerX = this.getBlockPos().getX() + 0.5;
+        double centerY = this.getBlockPos().getY() + 1.1;
+        double centerZ = this.getBlockPos().getZ() + 0.5;
+
+        // Progress-based animation
+        float progressRatio = (float) progress / maxProgress;
+        float radius = 1.5f + Mth.sin(progressRatio * Mth.PI) * 0.4f;
+
+        // Rotation over time
+        float time = (level.getGameTime() + level.getRandom().nextFloat()) * 0.1f;
+
+        int particleCount = 12;
+
+        for (int i = 0; i < particleCount; i++) {
+            double angle = time + (Math.PI * 2 * i / particleCount);
+
+            double x = centerX + Math.cos(angle) * radius;
+            double z = centerZ + Math.sin(angle) * radius;
+
+            level.addParticle(particle, // or ParticleTypes.SOUL_FIRE_FLAME
+                    x,
+                    centerY,
+                    z,
+                    0,
+                    0.01,
+                    0
+            );
+        }
     }
 
     private void craftItem() {

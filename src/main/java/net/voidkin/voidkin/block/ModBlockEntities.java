@@ -44,15 +44,23 @@ public class ModBlockEntities {
                             ModBlocks.SUB_BLOCK.get()).build(null));
 */
 
-    public static final RegistryObject<BlockEntityType<VoidAltarBlockEntity>> ALTAR_PEDESTAL =
-            BLOCK_ENTITIES.register("altar_pedestal", ()->
-                    BlockEntityType.Builder.of(VoidAltarBlockEntity::new,
-                            ModBlocks.MAIN_ALTAR_PEDESTAL.get()).build(null));
 
-    public static final RegistryObject<BlockEntityType<VoidPedestalBlockEntity>> SIDE_ALTAR_PEDESTAL =
-            BLOCK_ENTITIES.register("altar_pedestal_side", ()->
+    public static final RegistryObject<BlockEntityType<VoidAltarBlockEntity>> VOID_ALTAR =
+            BLOCK_ENTITIES.register("void_altar", ()->
+                    BlockEntityType.Builder.of(VoidAltarBlockEntity::new,
+                            ModBlocks.VOID_ALTAR.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<VoidPedestalBlockEntity>> VOID_PEDESTAL =
+            BLOCK_ENTITIES.register("void_pedestal", ()->
                     BlockEntityType.Builder.of(VoidPedestalBlockEntity::new,
-                            ModBlocks.SIDE_ALTAR_PEDESTAL.get()).build(null));
+                            ModBlocks.VOID_PEDESTAL.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<PedestalBlockEntity>> PEDESTAL =
+            BLOCK_ENTITIES.register("pedestal", ()->
+                    BlockEntityType.Builder.of(PedestalBlockEntity::new,
+                            ModBlocks.PEDESTAL.get()).build(null));
+
+
 
     public static final RegistryObject<BlockEntityType<CrystallizerBlockEntity>> CRYSTALLIZER =
             BLOCK_ENTITIES.register("crystallizer", () -> BlockEntityType.Builder.of(

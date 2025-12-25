@@ -86,8 +86,8 @@
   "block.voidkin.anti_cactus": "Anti Cactus",
   "block.voidkin.catmint": "Catmint",
 
-  "block.voidkin.altar_pedestal": "Void Altar",
-  "block.voidkin.altar_pedestal_side": "Void Pedestal",
+  "block.voidkin.void_altar": "Void Altar",
+  "block.voidkin.void_pedestal": "Void Pedestal",
 
   "block.voidkin.s": "§b§i§4 To be continued... S",
   "block.voidkin.s2": "§b§i§4 To be §5continued... S2",
@@ -162,6 +162,8 @@
   "enchantment.voidkin.lightning_striker": "Lightning Striker",
   "enchantment.voidkin.beheading": "Beheading",
 
+  "block.voidkin.pedestal": "Pedestal",
+
   "block.voidkin.polisher": "Gem Polisher",
   "block.voidkin.special_furnace": "Special Furnace",
   "block.voidkin.crystallizer": "Crystallizer",
@@ -188,8 +190,10 @@
   "item.voidkin.losin_streak_music_disc.desc": "Angel Dust - Losin' Streak",
 
   "item.voidkin.husk_love_music_disc": "Love In A Bottle Music Disc",
-
   "item.voidkin.husk_love_music_disc.desc": "Husker - Love In A Bottle",
+
+  "item.voidkin.brighter_music_disc": "Brighter Music Disc",
+  "item.voidkin.brighter_music_disc.desc": "Vox - Brighter",
 
 
   "item.voidkin.tomahawk": "Tomahawk",
@@ -206,5 +210,12 @@
   "creativetab.voidless_nature_tab":"§lVoidkin of Nature",
   "creativetab.psycho_tab":"§l§mPSYCHO Tab",
 
-  "name.voidkin.crystallizer": "Crystallizer"
+  "name.voidkin.crystallizer": "Crystallizer",
+
+
+  "death.attack.voidkin.life_steals": "%s's life was stolen by %s",
+  "death.attack.voidkin.life_steals.item": "%s's life was stolen by %s with %s",
+
+  "death.attack.voidkin.chakrams": "%s was burned to ash by %s",
+  "death.attack.voidkin.chakrams.item": "%s was burned to ash by %s using %s"
 }

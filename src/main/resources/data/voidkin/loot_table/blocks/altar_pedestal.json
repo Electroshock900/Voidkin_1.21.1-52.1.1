@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "voidkin:altar_pedestal"
+          "name": "voidkin:void_altar"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "voidkin:blocks/altar_pedestal"
+  "random_sequence": "voidkin:blocks/void_altar"
 }

@@ -166,8 +166,9 @@ public class ModBlockLootTables extends BlockLootSubProvider {
                 createSingleItemTable(ModItems.VOID_HANGING_SIGN.get()));
 
 
-        dropSelf(ModBlocks.MAIN_ALTAR_PEDESTAL.get());
-        dropSelf(ModBlocks.SIDE_ALTAR_PEDESTAL.get());
+        //dropSelf(ModBlocks.VOID_ALTAR.get());
+        //dropSelf(ModBlocks.VOID_PEDESTAL.get());
+        dropSelf(ModBlocks.PEDESTAL.get());
         //dropSelf(ModBlocks.AB.get());
         dropSelf(ModBlocks.VOID_TORCH.get());
         add(ModBlocks.VOID_WALL_TORCH.get(), block-> createSingleItemTable(ModBlocks.VOID_TORCH.get()));
