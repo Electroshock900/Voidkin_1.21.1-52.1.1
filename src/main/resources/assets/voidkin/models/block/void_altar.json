@@ -1,11 +1,11 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
-	"parent": "voidkin:block/altar_pedestal_side",
+	"parent": "voidkin:block/void_altar",
 	"texture_size": [128, 128],
 	"textures": {
-		"0": "voidkin:block/altar_pedestal_side",
-		"particle": "voidkin:block/altar_pedestal_side"
+		"0": "voidkin:block/void_altar",
+		"particle": "voidkin:block/void_altar"
 	},
 	"elements": [
 		{
