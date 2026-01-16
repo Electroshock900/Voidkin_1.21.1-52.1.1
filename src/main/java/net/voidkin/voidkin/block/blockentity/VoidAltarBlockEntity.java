@@ -126,6 +126,7 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
         CompoundTag tag = super.getUpdateTag(pRegistries);
         tag.putInt("altar_main.progress", progress);
         tag.putInt("altar_main.max_progress", maxProgress);
+        tag.put("altar_inventory", itemHandler.serializeNBT(pRegistries));
         return tag;
     }
 
@@ -134,6 +135,9 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
         super.handleUpdateTag(tag, holders);
         progress = tag.getInt("altar_main.progress");
         maxProgress = tag.getInt("altar_main.max_progress");
+        if (tag.contains("altar_inventory")) {
+            itemHandler.deserializeNBT(holders, tag.getCompound("altar_inventory"));
+        }
     }
 
 
@@ -472,15 +476,6 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-
-    @Override
-    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookup) {
-        //super.onDataPacket(connection, pkt, lookup);
-        CompoundTag tag = pkt.getTag();
-        if (tag != null) {
-            loadAdditional(tag, this.getLevel().registryAccess());
-        }
-    }
 
     private void spawnParticleRing(ParticleOptions particle) {
         if (level == null) return;

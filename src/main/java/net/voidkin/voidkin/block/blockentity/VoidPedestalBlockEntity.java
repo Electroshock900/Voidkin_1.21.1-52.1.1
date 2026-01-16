@@ -121,13 +121,13 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
     @Override
     protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
         super.saveAdditional(pTag, pRegistries);
-        pTag.put("inventory", inventory.serializeNBT(pRegistries));
+        pTag.put("pedestal_inventory", inventory.serializeNBT(pRegistries));
     }
 
     @Override
     protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
-        inventory.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
+        inventory.deserializeNBT(pRegistries, pTag.getCompound("pedestal_inventory"));
     }
 
     public float getRenderingRotation() {
@@ -146,10 +146,18 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        return saveWithoutMetadata(pRegistries);
+        //return saveWithoutMetadata(pRegistries);
+        CompoundTag tag = super.getUpdateTag(pRegistries);
+        tag.put("pedestal_inventory", inventory.serializeNBT(pRegistries));
+        return tag;
     }
 
-
+    @Override
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
+        if (tag.contains("pedestal_inventory")) {
+            inventory.deserializeNBT(registries, tag.getCompound("pedestal_inventory"));
+        }
+    }
 
 
     @Override
