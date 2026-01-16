@@ -153,11 +153,11 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
 
 
     @Override
-    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookup) {
-        super.onDataPacket(connection, pkt, lookup);
-        CompoundTag tag = pkt.getTag();
-        if (tag != null) {
-            loadAdditional(tag, lookup);
+    public void onDataPacket(Connection connection,
+                             ClientboundBlockEntityDataPacket packet,
+                             HolderLookup.Provider lookup) {
+        if (packet.getTag() != null) {
+            loadAdditional(packet.getTag(), lookup);
         }
     }
 

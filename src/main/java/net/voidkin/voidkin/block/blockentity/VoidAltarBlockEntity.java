@@ -66,10 +66,10 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
 
     public final ItemStackHandler itemHandler = new ItemStackHandler(9) {
         @Override
-        public void onContentsChanged(int slot) {
+        protected void onContentsChanged(int slot) {
             setChanged();
-            if(!level.isClientSide) {
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+            if(level !=null && !level.isClientSide()) {
+                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
             }
         }
     };
@@ -345,9 +345,9 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
     }
     private void craft(AltarRecipe recipe) {
         // Remove main item
-        this.itemHandler.setStackInSlot(0, ItemStack.EMPTY);
-        //itemHandler.extractItem(0, 1, false);
+        itemHandler.setStackInSlot(0, ItemStack.EMPTY);
         setChanged();
+        level.blockEntityChanged(this.getBlockPos());
         level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
         //itemHandler.setStackInSlot(0,ItemStack.EMPTY);
 
@@ -355,10 +355,10 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
         for (Vector2i offset : offsets) {
             BlockEntity be = this.level.getBlockEntity(worldPosition.offset(offset.x, 0, offset.y));
             if (be instanceof VoidPedestalBlockEntity pedestal) {
-                //pedestal.inventory.extractItem(0, 64, false);
                 pedestal.clearContent();
-                pedestal.inventory.setStackInSlot(0, ItemStack.EMPTY);
+                //pedestal.inventory.setStackInSlot(0, ItemStack.EMPTY);
                 pedestal.setChanged();
+                level.blockEntityChanged(pedestal.getBlockPos());
                 level.sendBlockUpdated(
                         pedestal.getBlockPos(),
                         pedestal.getBlockState(),
@@ -372,12 +372,13 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
         ItemStack result = recipe.output().copy();
         setChanged();
         itemHandler.insertItem(0, result, false);
+        level.blockEntityChanged(this.getBlockPos());
         level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
     }
 
     private void removefromSides(){
         offsets.forEach(offset -> ((VoidPedestalBlockEntity) level.getBlockEntity(this.getBlockPos().offset(offset.x, 0, offset.y)))
-                .inventory.setStackInSlot(0, ItemStack.EMPTY));
+                .clearContent());//inventory.setStackInSlot(0, ItemStack.EMPTY));
 
     }
     private boolean hasItemInPedestal(Vector2i pPos, ItemLike pItem){
