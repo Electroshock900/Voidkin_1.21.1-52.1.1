@@ -1,5 +1,6 @@
 package net.voidkin.voidkin.block.blockentity;
 
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -75,6 +76,7 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
     @Override
     public ItemStack removeItem(int i, int amount) {
         setChanged();
+        LogUtils.getLogger().debug("Pedestal Item removed");
         ItemStack stack = inventory.getStackInSlot(i);
         stack.shrink(amount);
         return inventory.insertItem(i, stack, false);
