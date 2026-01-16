@@ -353,16 +353,14 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
         setChanged();
         level.blockEntityChanged(this.getBlockPos());
         level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
-        //itemHandler.setStackInSlot(0,ItemStack.EMPTY);
 
         // Clear pedestal items
         for (Vector2i offset : offsets) {
             BlockEntity be = this.level.getBlockEntity(worldPosition.offset(offset.x, 0, offset.y));
             if (be instanceof VoidPedestalBlockEntity pedestal) {
-                pedestal.clearContent();
+                pedestal.setItem(0, ItemStack.EMPTY);
                 //pedestal.inventory.setStackInSlot(0, ItemStack.EMPTY);
-                pedestal.setChanged();
-                level.blockEntityChanged(pedestal.getBlockPos());
+                //pedestal.setChanged();
                 level.sendBlockUpdated(
                         pedestal.getBlockPos(),
                         pedestal.getBlockState(),
