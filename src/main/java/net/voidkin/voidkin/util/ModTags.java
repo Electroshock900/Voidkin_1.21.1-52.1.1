@@ -22,6 +22,7 @@ public class ModTags {
     }
     public static class Items {
         public static final TagKey<Item> CHAKRAM_ENCHANTABLE = tag("chakram_enchantables");
+        public static final TagKey<Item> SPIDER_ENCHANTABLE = tag("spiders");
 
         private static TagKey<Item> tag(String name) {
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID, name));
