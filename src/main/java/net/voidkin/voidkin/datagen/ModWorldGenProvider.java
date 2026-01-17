@@ -26,6 +26,7 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
             .add(ForgeRegistries.Keys.BIOME_MODIFIERS, ModBiomeModifiers::bootstrap)
             .add(Registries.BIOME, ModBiomes::boostrap)
             .add(Registries.LEVEL_STEM, ModDimensions::bootstrapStem);
+            //.add(Registries.)
             //.add(Registries.DAMAGE_TYPE, ModDamageTypes::bootstrap);
 
     public ModWorldGenProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {

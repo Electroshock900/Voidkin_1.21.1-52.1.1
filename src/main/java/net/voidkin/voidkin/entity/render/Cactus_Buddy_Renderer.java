@@ -39,7 +39,7 @@ public class Cactus_Buddy_Renderer extends MobRenderer<Cactus_Buddy, Cactus_Budd
     public void render(Cactus_Buddy cactusBuddy, float p_115456_, float p_115457_, PoseStack pStack, MultiBufferSource p_115459_, int p_115460_) {
         if(cactusBuddy.isBaby()) {
             pStack.scale(2f, 2f, 2f);
-        }else{pStack.scale(4f,4f,4f);
+        }else{pStack.scale(3f,3f,3f);
 
         }
         super.render(cactusBuddy, p_115456_, p_115457_, pStack, p_115459_, p_115460_);
