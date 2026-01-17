@@ -78,7 +78,7 @@ public class AltarBlockEntityRenderer implements BlockEntityRenderer<VoidAltarBl
     }
     private static void renderSidePedestal(PoseStack pPoseStack, MultiBufferSource pBuffer,int pPackedLight, int pPackedOverlay, float xOffset, float zOffset){
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-        BlockState state = ModBlocks.SIDE_ALTAR_PEDESTAL.get().defaultBlockState();
+        BlockState state = ModBlocks.VOID_PEDESTAL.get().defaultBlockState();
 
         VertexConsumer consumer = pBuffer.getBuffer(ModGhostRenderTypes.GHOST);
         //RenderSystem.enableBlend();

@@ -27,7 +27,7 @@ public class AltarMenu extends AbstractContainerMenu {
     }
 
     public AltarMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
-        super(ModMenuTypes.MAIN_ALTAR_MENU.get(), pContainerId);
+        super(ModMenuTypes.VOID_ALTAR_MENU.get(), pContainerId);
         checkContainerSize(inv, 9);
         blockEntity = ((VoidAltarBlockEntity) entity);
         this.level = inv.player.level();
@@ -156,7 +156,7 @@ public class AltarMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player pPlayer) {
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
-                pPlayer, ModBlocks.MAIN_ALTAR_PEDESTAL.get());
+                pPlayer, ModBlocks.VOID_ALTAR.get());
     }
 
     private void addPlayerInventory(Inventory playerInventory) {

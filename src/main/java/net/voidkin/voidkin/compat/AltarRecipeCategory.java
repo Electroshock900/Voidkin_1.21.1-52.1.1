@@ -29,7 +29,7 @@ public class AltarRecipeCategory implements IRecipeCategory<AltarRecipe> {
 
     public AltarRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 85);
-        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.MAIN_ALTAR_PEDESTAL.get()));
+        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.VOID_ALTAR.get()));
     }
 
     @Override
