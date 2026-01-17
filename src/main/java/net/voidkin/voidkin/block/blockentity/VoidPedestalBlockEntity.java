@@ -70,7 +70,7 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
 
     @Override
     public ItemStack getItem(int i) {
-        setChanged();
+        //setChanged();
         return inventory.getStackInSlot(i);
     }
 
@@ -94,7 +94,7 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
         inventory.extractItem(0,1,false);
         sync();
         inventory.insertItem(i, itemStack.copyWithCount(1), false);
-        setChanged();
+        //setChanged();
         sync();
         //inventory.extractItem(0,64,false);
         //inventory.insertItem(i, itemStack.copyWithCount(1), false);
@@ -109,8 +109,8 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
     @Override
     public void clearContent() {
         for(int i = 0; i < getContainerSize(); i++) {
-            inventory.setStackInSlot(0, ItemStack.EMPTY);
-            setChanged();
+            inventory.extractItem(0, getMaxStackSize(),false);
+            //setChanged();
             sync();
             //level.sendBlockUpdated(getBlockPos(),getBlockState(),getBlockState(),3);
 
@@ -119,20 +119,21 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
 
     public void sync() {
         if (level != null && !level.isClientSide) {
+            setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
         }
     }
 
     @Override
     protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.saveAdditional(pTag, pRegistries);
         pTag.put("pedestal_inventory", inventory.serializeNBT(pRegistries));
+        super.saveAdditional(pTag, pRegistries);
     }
 
     @Override
     protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
         inventory.deserializeNBT(pRegistries, pTag.getCompound("pedestal_inventory"));
+        super.loadAdditional(pTag, pRegistries);
     }
 
     public float getRenderingRotation() {
