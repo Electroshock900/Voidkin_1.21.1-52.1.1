@@ -6,6 +6,7 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -33,6 +34,13 @@ public class ModTags {
         public static final TagKey<Biome> GORE_OCEANS = tag("gore_oceans");
         private static TagKey<Biome> tag(String name) {
             return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID, name));
+        }
+    }
+    public static class Entity{
+        public static final TagKey<EntityType<?>> DEMONS = tag("demon_mobs");
+
+        private static TagKey<EntityType<?>> tag(String name) {
+            return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID, name));
         }
     }
 
