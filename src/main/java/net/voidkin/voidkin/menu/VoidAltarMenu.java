@@ -90,7 +90,7 @@ public class VoidAltarMenu extends AbstractContainerMenu {
     }
     public ItemStack getItemFromPedestals(){
         if(blockEntity instanceof VoidPedestalBlockEntity other){
-            return other.getItem(0);
+            return other.inventory.getStackInSlot(0);
         }
         return ItemStack.EMPTY;
     }

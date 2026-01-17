@@ -3,29 +3,34 @@ package net.voidkin.voidkin.menu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
+import net.voidkin.voidkin.block.ModBlocks;
 import net.voidkin.voidkin.block.blockentity.VoidPedestalBlockEntity;
 
 public class VoidPedestalMenu extends AbstractContainerMenu {
-    public final VoidPedestalBlockEntity pedestalBlockEntity;
+    public final VoidPedestalBlockEntity blockEntity;
+    private final Level level;
+    private final ContainerData data;
 
     public VoidPedestalMenu(int pContainerId, Inventory inventory, FriendlyByteBuf extraData) {
-        this(pContainerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(pContainerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()),new SimpleContainerData(1));
     }
 
-    public VoidPedestalMenu(int pContainerId, Inventory inv, BlockEntity blockEntity) {
+    public VoidPedestalMenu(int pContainerId, Inventory inv, BlockEntity blockEntity, ContainerData data) {
         super(ModMenuTypes.VOID_PEDESTAL_MENU.get(), pContainerId);
-        pedestalBlockEntity = ((VoidPedestalBlockEntity) blockEntity);
+        this.blockEntity = ((VoidPedestalBlockEntity) blockEntity);
+        this.level = inv.player.level();
+        this.data = data;
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
 
-        this.pedestalBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler -> {
+        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler -> {
             this.addSlot(new SlotItemHandler(itemHandler, 0, 80, 35));
         });
     }
@@ -84,8 +89,9 @@ public class VoidPedestalMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player player) {
-        return pedestalBlockEntity.stillValid(player);
+    public boolean stillValid(Player pPlayer) {
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
+                pPlayer, ModBlocks.VOID_PEDESTAL.get());
     }
 
     private void addPlayerInventory(Inventory playerInventory) {

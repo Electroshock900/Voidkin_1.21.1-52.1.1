@@ -15,6 +15,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,7 +30,7 @@ import net.voidkin.voidkin.menu.VoidPedestalMenu;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class VoidPedestalBlockEntity extends BlockEntity implements Container, MenuProvider {
+public class VoidPedestalBlockEntity extends BlockEntity implements MenuProvider {
     public final ItemStackHandler inventory = new ItemStackHandler(1) {
         @Override
         protected int getStackLimit(int slot, @NotNull ItemStack stack) {
@@ -45,76 +46,35 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
             }
         }
     };
+    protected final ContainerData data;
+    private int progress;
     private float rotation = 0;
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
     public VoidPedestalBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.VOID_PEDESTAL.get(), pPos, pBlockState);
-    }
+        this.data = new ContainerData() {
+            @Override
+            public int get(int pIndex) {
+                return progress;
 
-    @Override
-    public int getContainerSize() {
-        return inventory.getSlots();
-    }
 
-    @Override
-    public boolean isEmpty() {
-        for(int i = 0; i < getContainerSize(); i++) {
-            ItemStack stack = getItem(i);
-            if(!stack.isEmpty()) {
-                return false;
+
             }
-        }
-        return true;
-    }
 
-    @Override
-    public ItemStack getItem(int i) {
-        //setChanged();
-        return inventory.getStackInSlot(i);
-    }
+            @Override
+            public void set(int pIndex, int pValue) {
+                if (pIndex == 0) {
+                    progress = pValue;
+                    //case 1 -> maxProgress = pValue;
+                }
+            }
 
-    @Override
-    public ItemStack removeItem(int i, int amount) {
-        setChanged();
-        //ItemStack stack = inventory.getStackInSlot(i);
-        //stack.shrink(amount);
-        return inventory.extractItem(i, getMaxStackSize(), false);
-    }
-
-    @Override
-    public ItemStack removeItemNoUpdate(int i) {
-        setChanged();
-        return i >= 0 && i < getContainerSize() ? inventory.insertItem(i, ItemStack.EMPTY, false) : ItemStack.EMPTY;
-    }
-
-    @Override
-    public void setItem(int i, ItemStack itemStack) {
-        //inventory.setStackInSlot(i,itemStack);
-        inventory.extractItem(0,1,false);
-        sync();
-        inventory.insertItem(i, itemStack.copyWithCount(1), false);
-        //setChanged();
-        sync();
-        //inventory.extractItem(0,64,false);
-        //inventory.insertItem(i, itemStack.copyWithCount(1), false);
-        //level.sendBlockUpdated(getBlockPos(),getBlockState(),getBlockState(),3);
-    }
-
-    @Override
-    public boolean stillValid(Player player) {
-        return Container.stillValidBlockEntity(this, player);
-    }
-
-    @Override
-    public void clearContent() {
-        for(int i = 0; i < getContainerSize(); i++) {
-            inventory.extractItem(0, getMaxStackSize(),false);
-            //setChanged();
-            sync();
-            //level.sendBlockUpdated(getBlockPos(),getBlockState(),getBlockState(),3);
-
-        }
+            @Override
+            public int getCount() {
+                return 1;
+            }
+        };
     }
 
     public void sync() {
@@ -207,6 +167,6 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-        return new VoidPedestalMenu(i, inventory, this);
+        return new VoidPedestalMenu(i, inventory, this, this.data);
     }
 }
