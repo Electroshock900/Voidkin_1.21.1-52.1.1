@@ -371,7 +371,7 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
                         pedestal.getBlockState(),
                         3
                 );
-                level.updateNeighborsAt(pedestal.getBlockPos(),pedestal.getBlockState().getBlock());
+                //level.updateNeighborsAt(pedestal.getBlockPos(),pedestal.getBlockState().getBlock());
             }
         }
         //spawnParticleRing(ParticleTypes.SOUL);
