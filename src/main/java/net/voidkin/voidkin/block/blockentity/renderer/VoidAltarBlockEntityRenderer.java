@@ -13,13 +13,18 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 import net.voidkin.voidkin.block.blockentity.VoidAltarBlockEntity;
+import net.voidkin.voidkin.block.blockentity.VoidPedestalBlockEntity;
 import net.voidkin.voidkin.render.ModGhostRenderTypes;
 import net.voidkin.voidkin.block.ModBlocks;
 import org.joml.Vector2i;
@@ -42,7 +47,6 @@ public class VoidAltarBlockEntityRenderer implements BlockEntityRenderer<VoidAlt
             new Vector2i(-2,-2),
             new Vector2i(-3,0),
             new Vector2i(-2,2));
-
 
     @Override
     public void render(VoidAltarBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack,
@@ -73,6 +77,96 @@ public class VoidAltarBlockEntityRenderer implements BlockEntityRenderer<VoidAlt
                 renderSidePedestal(pPoseStack,pBuffer,pPackedLight,pPackedOverlay, offset.x, offset.y);
             }
         });
+
+
+        Level level = pBlockEntity.getLevel();
+        if (level == null) return;
+
+        // Only render while crafting
+        if (pBlockEntity.progress <= 0 || pBlockEntity.progress >= pBlockEntity.maxProgress) return;
+
+        //ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+
+        // Animation progress 0 → 1
+        float t = pBlockEntity.progress / (float) pBlockEntity.maxProgress;
+        float eased = (float) Mth.smoothstep(0.0F);
+
+        // Altar center (world space)
+        Vec3 altarPos = Vec3.atCenterOf(pBlockEntity.getBlockPos()).add(0, 1.1, 0);
+
+        long time = level.getGameTime();
+
+        for (Vector2i offset : VoidAltarBlockEntity.offsets) {
+
+            BlockPos pedestalPosBlock = pBlockEntity.getBlockPos().offset(offset.x, 0, offset.y);
+            BlockEntity pedBE = level.getBlockEntity(pedestalPosBlock);
+
+            if (!(pedBE instanceof VoidPedestalBlockEntity pedestal)) continue;
+
+            ItemStack pStack = pedestal.inventory.getStackInSlot(0);
+            if (pStack.isEmpty()) continue;
+
+            // Pedestal center
+            Vec3 pedestalPos = Vec3.atCenterOf(pedestalPosBlock).add(0, 0.5, 0);
+
+        /* =========================
+           BEAM PARTICLES
+           ========================= */
+            int segments = 12;
+            for (int i = 0; i <= segments; i++) {
+                double p = i / (double) segments;
+                Vec3 beamPos = pedestalPos.lerp(altarPos, p);
+
+                level.addParticle(
+                        ParticleTypes.SOUL_FIRE_FLAME,
+                        beamPos.x,
+                        beamPos.y,
+                        beamPos.z,
+                        0,
+                        0.01,
+                        0
+                );
+            }
+
+        /* =========================
+           ITEM PULL POSITION
+           ========================= */
+            Vec3 pullPos = pedestalPos.lerp(altarPos, eased);
+
+            // Optional spiral motion
+            Vec3 dir = altarPos.subtract(pedestalPos).normalize();
+            Vec3 side = new Vec3(-dir.z, 0, dir.x);
+            double swirl = Math.sin((time + pPartialTick) * 0.3 + offset.x) * 0.15 * (1 - eased);
+            pullPos = pullPos.add(side.scale(swirl));
+
+        /* =========================
+           RENDER ITEM
+           ========================= */
+            pPoseStack.pushPose();
+
+            // Convert world → local renderer space
+            pPoseStack.translate(
+                    pullPos.x - pBlockEntity.getBlockPos().getX() - 0.5,
+                    pullPos.y - pBlockEntity.getBlockPos().getY() - 1.1,
+                    pullPos.z - pBlockEntity.getBlockPos().getZ() - 0.5
+            );
+
+            pPoseStack.scale(0.4f, 0.4f, 0.4f);
+            pPoseStack.mulPose(Axis.YP.rotationDegrees((time + pPartialTick) * 8f));
+
+            /*itemRenderer.renderStatic(
+                    stack,
+                    ItemDisplayContext.FIXED,
+                    pPackedLight,
+                    OverlayTexture.NO_OVERLAY,
+                    pPoseStack,
+                    pBuffer,
+                    level,
+                    0
+            );*/
+
+            pPoseStack.popPose();
+        }
 
 //        pPoseStack.popPose();
     }
@@ -108,6 +202,17 @@ public class VoidAltarBlockEntityRenderer implements BlockEntityRenderer<VoidAlt
         pPoseStack.popPose();
 
     }
+
+    /*public static void renderPullingBeams(PoseStack pPoseStack, MultiBufferSource pBuffer,int pPackedLight, int pPackedOverlay, float xOffset, float zOffset){
+        VoidAltarBlockEntity.progress;
+        float t = progress / (float) maxProgress; // 0 → 1
+
+        Vec3 altarPos = Vec3.atCenterOf(pBlockEntity.getBlockPos()).add(0, 1.1, 0);
+
+        Vec3 pedestalPos = Vec3.atCenterOf(
+                pBlockEntity.getBlockPos().offset(offset.x, 0, offset.y)
+        ).add(0, 1.2, 0);
+    }*/
 
     @Override
     public boolean shouldRenderOffScreen(VoidAltarBlockEntity pBlockEntity) {

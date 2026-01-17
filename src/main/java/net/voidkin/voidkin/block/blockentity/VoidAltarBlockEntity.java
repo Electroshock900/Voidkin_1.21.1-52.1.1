@@ -80,8 +80,8 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
     protected final ContainerData data;
-    private int progress = 0;
-    private int maxProgress = 78;
+    public int progress = 0;
+    public int maxProgress = 78;
 
     public VoidAltarBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.VOID_ALTAR.get(), pPos, pBlockState);
