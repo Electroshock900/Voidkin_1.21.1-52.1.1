@@ -92,8 +92,22 @@ public class VoidPedestalBlockEntity extends BlockEntity implements MenuProvider
 
     @Override
     protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        inventory.deserializeNBT(pRegistries, pTag.getCompound("pedestal_inventory"));
         super.loadAdditional(pTag, pRegistries);
+        ItemStackHandler newInv = new ItemStackHandler(1) {
+            @Override
+            protected int getStackLimit(int slot, @NotNull ItemStack stack) {
+                return 1;
+            }
+
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+            }
+        };
+
+        newInv.deserializeNBT(pRegistries, pTag.getCompound("pedestal_inventory"));
+        this.inventory.setStackInSlot(0, newInv.getStackInSlot(0));
+        //inventory.deserializeNBT(pRegistries, pTag.getCompound("pedestal_inventory"));
     }
 
     public float getRenderingRotation() {
