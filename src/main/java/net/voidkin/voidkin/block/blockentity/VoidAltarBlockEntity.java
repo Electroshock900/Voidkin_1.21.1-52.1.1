@@ -358,7 +358,11 @@ public class VoidAltarBlockEntity extends BlockEntity implements MenuProvider {
         for (Vector2i offset : offsets) {
             BlockEntity be = this.level.getBlockEntity(worldPosition.offset(offset.x, 0, offset.y));
             if (be instanceof VoidPedestalBlockEntity pedestal) {
+                pedestal.inventory.extractItem(0, pedestal.getMaxStackSize(), false);
+
                 pedestal.setItem(0, ItemStack.EMPTY);
+
+                pedestal.sync();
                 //pedestal.inventory.setStackInSlot(0, ItemStack.EMPTY);
                 pedestal.setChanged();
                 level.sendBlockUpdated(

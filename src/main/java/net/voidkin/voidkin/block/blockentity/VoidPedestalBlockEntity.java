@@ -1,5 +1,6 @@
 package net.voidkin.voidkin.block.blockentity;
 
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -40,6 +41,7 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
             setChanged();
             if(level !=null && !level.isClientSide()) {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+                LogUtils.getLogger().debug("Pedestal Item: " + inventory.getStackInSlot(0));
             }
         }
     };
@@ -75,9 +77,9 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
     @Override
     public ItemStack removeItem(int i, int amount) {
         setChanged();
-        ItemStack stack = inventory.getStackInSlot(i);
-        stack.shrink(amount);
-        return inventory.insertItem(i, stack, false);
+        //ItemStack stack = inventory.getStackInSlot(i);
+        //stack.shrink(amount);
+        return inventory.extractItem(i, getMaxStackSize(), false);
     }
 
     @Override
@@ -88,7 +90,10 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
 
     @Override
     public void setItem(int i, ItemStack itemStack) {
-        inventory.setStackInSlot(i,itemStack);
+        //inventory.setStackInSlot(i,itemStack);
+        inventory.extractItem(0,1,false);
+        sync();
+        inventory.insertItem(i, itemStack.copyWithCount(1), false);
         setChanged();
         sync();
         //inventory.extractItem(0,64,false);
@@ -112,7 +117,7 @@ public class VoidPedestalBlockEntity extends BlockEntity implements Container, M
         }
     }
 
-    private void sync() {
+    public void sync() {
         if (level != null && !level.isClientSide) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
         }
