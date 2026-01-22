@@ -1,5 +1,6 @@
 package net.voidkin.voidkin.datagen;
 
+import net.minecraftforge.common.Tags;
 import net.voidkin.voidkin.VoidkinMod;
 import net.voidkin.voidkin.block.ModBlocks;
 import net.minecraft.core.HolderLookup;
@@ -83,6 +84,7 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                 .add(ModBlocks.DARK_LEAVES.get(),ModBlocks.BLOOD_LEAVES.get(),ModBlocks.VOID_LEAVES.get());
         this.tag(BlockTags.FLOWERS)
                 .add(ModBlocks.CATMINT.get(),ModBlocks.LOTUS.get());
+
 
     }
 }

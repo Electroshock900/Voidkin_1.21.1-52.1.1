@@ -1,5 +1,6 @@
 package net.voidkin.voidkin.datagen;
 
+import net.minecraftforge.common.Tags;
 import net.voidkin.voidkin.VoidkinMod;
 import net.voidkin.voidkin.block.ModBlocks;
 import net.voidkin.voidkin.item.ModItems;
@@ -21,6 +22,11 @@ public class ModItemTagGenerator extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
+        this.tag(Tags.Items.CROPS_CACTUS)
+                .add(ModBlocks.ANTI_CACTUS.get().asItem(),
+                        ModBlocks.DARK_CACTUS.get().asItem(),
+                        ModBlocks.END_CACTUS.get().asItem()
+                );
         this.tag(ModTags.Items.CHAKRAM_ENCHANTABLE)
                 .add(ModItems.CHAKRAM.get());
         this.tag(ItemTags.TRIDENT_ENCHANTABLE)

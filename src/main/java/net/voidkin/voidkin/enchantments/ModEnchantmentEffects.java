@@ -17,11 +17,14 @@ public class ModEnchantmentEffects {
     public static final RegistryObject<MapCodec<? extends EnchantmentEntityEffect>> LIGHTNING_STRIKER =
             ENTITY_ENCHANTMENT_EFFECTS.register("lightning_striker", () -> LightningStrikerEnchantment.CODEC);
 
+
     public static final DeferredRegister<MapCodec<? extends EnchantmentLocationBasedEffect>> LOCATION_BASED_ENCHANTMENT_EFFECTS =
             DeferredRegister.create(Registries.ENCHANTMENT_LOCATION_BASED_EFFECT_TYPE, VoidkinMod.MODID);
 
     public static final RegistryObject<MapCodec<? extends EnchantmentLocationBasedEffect>> BLOOD_WALKER =
             LOCATION_BASED_ENCHANTMENT_EFFECTS.register("blood_walker", ()-> ReplaceDisk.CODEC);
+    public static final RegistryObject<MapCodec<? extends EnchantmentLocationBasedEffect>> LUNAR_SPEED =
+            LOCATION_BASED_ENCHANTMENT_EFFECTS.register("lunar_speed", () -> LunarSpeedEnchantment.CODEC);
 
 
 

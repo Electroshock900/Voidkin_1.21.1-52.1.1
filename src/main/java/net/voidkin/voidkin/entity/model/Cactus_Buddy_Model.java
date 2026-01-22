@@ -4,7 +4,7 @@ package net.voidkin.voidkin.entity.model;// Made with Blockbench 4.8.3
 
 
 import net.voidkin.voidkin.VoidkinMod;
-import net.voidkin.voidkin.animations.ModAnimationDefinitions;
+import net.voidkin.voidkin.animations.CactusBuddyAnimations;
 import net.voidkin.voidkin.entity.custom.Cactus_Buddy;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -64,9 +64,9 @@ public class Cactus_Buddy_Model<T extends Cactus_Buddy> extends HierarchicalMode
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 		this.applyHeadRotation(netHeadYaw, headPitch, ageInTicks);
 
-		this.animateWalk(ModAnimationDefinitions.CACTUS_BUDDY_WALK, limbSwing, limbSwingAmount, 2f, 2.5f);
-		this.animate(((Cactus_Buddy) entity).idleAnimationState, ModAnimationDefinitions.CACTUS_BUDDY_IDLE, ageInTicks, 1f);
-		this.animate(((Cactus_Buddy) entity).attackAnimationState, ModAnimationDefinitions.CACTUS_BUDDY_ATTACK, ageInTicks, 1f);
+		this.animateWalk(CactusBuddyAnimations.CACTUS_BUDDY_WALK, limbSwing, limbSwingAmount, 2f, 2.5f);
+		this.animate(((Cactus_Buddy) entity).idleAnimationState, CactusBuddyAnimations.CACTUS_BUDDY_IDLE, ageInTicks, 1f);
+		this.animate(((Cactus_Buddy) entity).attackAnimationState, CactusBuddyAnimations.CACTUS_BUDDY_ATTACK, ageInTicks, 1f);
 	}
 	private void applyHeadRotation(float pNetHeadYaw, float pHeadPitch, float pAgeInTicks) {
 		pNetHeadYaw = Mth.clamp(pNetHeadYaw, -30.0F, 30.0F);

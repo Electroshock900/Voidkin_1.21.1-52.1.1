@@ -90,6 +90,7 @@ public class ModTabs {
                         pOutput.accept(ModItems.LTSE.get());
                         pOutput.accept(ModItems.MRSE.get());
                         pOutput.accept(ModItems.OSE.get());
+                        pOutput.accept(ModItems.HOSE.get());
                         pOutput.accept(ModItems.PSE.get());
 //PLANTS
                         pOutput.accept(ModBlocks.CATMINT.get());

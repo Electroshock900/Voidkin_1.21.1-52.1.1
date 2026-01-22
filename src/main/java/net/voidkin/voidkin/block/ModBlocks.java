@@ -74,13 +74,13 @@ public class ModBlocks {
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.SNOW)));
 //CACTUS
     public static final RegistryObject<Block> ANTI_CACTUS = registerBlock("anti_cactus",
-            ()-> new CactusBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CACTUS)));
+            ()-> new AntiCactusBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CACTUS)));
     public static final RegistryObject<Block> DARK_CACTUS = registerBlock("dark_cactus",
             () -> new CactusBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CACTUS)));
     public static final RegistryObject<Block> END_CACTUS = registerBlock("end_cactus",
             () -> new CactusBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CACTUS)));
 
-    /**public static final RegistryObject<Block> POTTED_ANTI_CACTUS = BLOCKS.register("potted_anti_cactus",
+    public static final RegistryObject<Block> POTTED_ANTI_CACTUS = BLOCKS.register("potted_anti_cactus",
             () -> new FlowerPotBlock(() -> ((FlowerPotBlock) Blocks.FLOWER_POT), ModBlocks.ANTI_CACTUS,
                     BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_CACTUS).noOcclusion()));
     public static final RegistryObject<Block> POTTED_DARK_CACTUS = BLOCKS.register("potted_dark_cactus",
@@ -88,7 +88,7 @@ public class ModBlocks {
                     BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_CACTUS).noOcclusion()));
     public static final RegistryObject<Block> POTTED_END_CACTUS = BLOCKS.register("potted_end_cactus",
             () -> new FlowerPotBlock(() -> ((FlowerPotBlock) Blocks.FLOWER_POT), ModBlocks.END_CACTUS,
-                    BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_CACTUS).noOcclusion()))**/;
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_CACTUS).noOcclusion()));
 
 
 //DARK WOOD STUFF
@@ -148,7 +148,20 @@ public class ModBlocks {
     public static final RegistryObject<Block> STRIPPED_BLOOD_LOG = registerBlock("stripped_blood_log", () -> new ModFlammableRotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STRIPPED_DARK_OAK_LOG).requiresCorrectToolForDrops().strength(5.0F)));
     public static final RegistryObject<Block> STRIPPED_BLOOD_WOOD = registerBlock("stripped_blood_wood", () -> new ModFlammableRotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STRIPPED_DARK_OAK_WOOD).requiresCorrectToolForDrops().strength(5.0F)));
     public static final RegistryObject<Block> BLOOD_PLANKS = registerBlock("blood_planks", () -> new ModFlammableRotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_OAK_PLANKS).requiresCorrectToolForDrops().strength(5.0F)));
-    public static final RegistryObject<Block> BLOOD_LEAVES = registerBlock("blood_leaves", () -> new DeathLeavesBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_OAK_LEAVES)));
+    public static final RegistryObject<Block> BLOOD_LEAVES = registerBlock("blood_leaves", () -> new LeavesBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_OAK_LEAVES)){
+        @Override
+        public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
+            super.animateTick(blockState, level, blockPos, randomSource);
+            if (randomSource.nextInt(4) == 0) {
+                BlockPos blockpos = blockPos.below();
+                BlockState blockstate = level.getBlockState(blockpos);
+                if (!isFaceFull(blockstate.getCollisionShape(level, blockpos), Direction.UP)) {
+                    ParticleUtils.spawnParticleBelow(level, blockPos, randomSource, ModParticles.DRIPPING_BLOOD.get());
+                }
+            }
+        }
+    });
+
 
     public static final RegistryObject<Block> BLOOD_STAIRS = registerBlock("blood_stairs",
             () -> new StairBlock(ModBlocks.BLOOD_PLANKS.get().defaultBlockState(),
@@ -302,7 +315,7 @@ public class ModBlocks {
     //TORCHS
 
     public static final RegistryObject<Block> VOID_TORCH = BLOCKS.register("void_torch",
-            ()-> new ModTorchBlock(BlockBehaviour.Properties.of(), ParticleTypes.SOUL_FIRE_FLAME){
+            ()-> new TorchBlock(ModParticles.VOID_FLAME.get(),BlockBehaviour.Properties.of())/*{
         @Override
         public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
             double d0 = (double)pPos.getX() + 0.5D;
@@ -312,23 +325,13 @@ public class ModBlocks {
             pLevel.addParticle(ModParticles.VOID_FLAME.get(), d0, d1, d2, 0.0D, -0.05D, 0.0D);
             //pLevel.addParticle(ModParticles.VOID_FLAME.get(), d0, d1, d2, 0.0D, 0.0D, 0.0D);
         }
-            });
+            }*/);
 
     public static final RegistryObject<Block> VOID_WALL_TORCH = BLOCKS.register("void_torch_wall",
-            ()-> new ModWallTorchBlock(BlockBehaviour.Properties.of(), ParticleTypes.SOUL_FIRE_FLAME) {
-                @Override
-                public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
-                    double d0 = (double) pPos.getX() + 0.5D;
-                    double d1 = (double) pPos.getY() + 0.7D;
-                    double d2 = (double) pPos.getZ() + 0.5D;
-                    //pLevel.addParticle(ParticleTypes.SMOKE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
-                    pLevel.addParticle(ModParticles.VOID_FLAME.get(), d0, d1, d2, 0.0D, -0.05D, 0.0D);
-                    //pLevel.addParticle(ModParticles.VOID_FLAME.get(), d0, d1, d2, 0.0D, 0.0D, 0.0D);
-                }
-            });
+            ()-> new WallTorchBlock(ModParticles.VOID_FLAME.get(),BlockBehaviour.Properties.of()));
 
     public static final RegistryObject<Block> D_TORCH = BLOCKS.register("d_torch",
-            ()-> new ModTorchBlock(BlockBehaviour.Properties.of(), ParticleTypes.SOUL){
+            ()-> new TorchBlock(ParticleTypes.SOUL, BlockBehaviour.Properties.of()){
                 @Override
                 public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
                     double d0 = (double)pPos.getX() + 0.5D;
@@ -341,7 +344,7 @@ public class ModBlocks {
             });
 
     public static final RegistryObject<Block> D_WALL_TORCH = BLOCKS.register("d_torch_wall",
-            ()-> new ModWallTorchBlock(BlockBehaviour.Properties.of(), ParticleTypes.SOUL) {
+            ()-> new WallTorchBlock(ParticleTypes.SOUL, BlockBehaviour.Properties.of() ) {
                 @Override
                 public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
                     double d0 = (double) pPos.getX() + 0.5D;
@@ -360,8 +363,6 @@ public class ModBlocks {
     public static final RegistryObject<Block> CRYSTALLIZER = registerBlock("crystallizer",
             () -> new CrystallizerBlock(BlockBehaviour.Properties.of().strength(2f).requiresCorrectToolForDrops().randomTicks()));
 
-
-    //ModParticles.VOID_FLAME.get()));
 
     /**public static final RegistryObject<Block> ABYSSAL_CONTAINER = registerBlock("abyssal_container",
               ()-> new AbyssalContainer(BlockBehaviour.Properties.ofFullCopy(Blocks.CHEST),AbyssalContainerEntity::new));**/
@@ -405,7 +406,7 @@ public class ModBlocks {
 //FUNCTIONAL BLOCKS
     //public static final RegistryObject<Block> CANDY_CANE_FURNACE = registerBlock("candy_cane_furnace", () -> new CandyCaneFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)));
     public static final RegistryObject<Block> SBLOCK = registerBlock("sblock",() -> new BlockS(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)));
-    public static final RegistryObject<Block> POLISHER = registerBlock("polisher",() -> new PolisherBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));
+    public static final RegistryObject<Block> POLISHER = BLOCKS.register("polisher",() -> new PolisherBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));
 
     //public static final RegistryObject<Block> DOM_BLOCK = registerBlock("dom_block",() -> new DomBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));
     //public static final RegistryObject<Block> SUB_BLOCK = registerBlock("sub_block",() -> new SubBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()));

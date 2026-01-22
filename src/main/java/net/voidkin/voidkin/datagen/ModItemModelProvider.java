@@ -43,9 +43,11 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels(){
-        simpleItem(ModItems.DAISIES_MUSIC_DISC);
+        /*simpleItem(ModItems.DAISIES_MUSIC_DISC);
         simpleItem(ModItems.UPSIDE_DOWN_MUSIC_DISC);
-        simpleItem(ModItems.GRAVITY_MUSIC_DISC);
+        simpleItem(ModItems.GRAVITY_MUSIC_DISC);*/
+        withExistingParent(ModItems.HOSE.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        simpleBlockItem(ModBlocks.PEDESTAL);
         //simpleItem(_);
     }
     protected void registerModels2() {

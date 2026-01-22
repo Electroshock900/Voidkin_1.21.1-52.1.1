@@ -15,6 +15,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentTarget;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -41,9 +42,14 @@ import java.util.Optional;
 public class ModEnchantments {
     public static final DeferredRegister<Enchantment> ENCHANTMENTS =
             DeferredRegister.create(Registries.ENCHANTMENT, VoidkinMod.MODID);
+    /*public static final DeferredRegister<DataComponentType<?>> ENCHANTMENT_COMPONENT_TYPES =
+            DeferredRegister.create(BuiltInRegistries.ENCHANTMENT_EFFECT_COMPONENT_TYPE, VoidkinMod.MODID);*/
+
 
     public static ResourceKey<Enchantment> LIGHTNING_STRIKER = ResourceKey.create(Registries.ENCHANTMENT,
             ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID, "lightning_striker"));
+    public static ResourceKey<Enchantment> LUNAR_SPEED = ResourceKey.create(Registries.ENCHANTMENT,
+            ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID, "lunar_speed"));
     public static ResourceKey<Enchantment> BEHEADING = ResourceKey.create(Registries.ENCHANTMENT,
             ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID,"beheading"));
     public static ResourceKey<Enchantment> BLOOD_WALKER = ResourceKey.create(Registries.ENCHANTMENT,
@@ -71,7 +77,37 @@ public class ModEnchantments {
                 .exclusiveWith(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
                         EnchantmentTarget.VICTIM, new LightningStrikerEnchantment()));
-        
+
+        register(context, LUNAR_SPEED, Enchantment.enchantment(Enchantment.definition(
+                        items.getOrThrow(ItemTags.FOOT_ARMOR_ENCHANTABLE),
+                        5,
+                        2,
+                        Enchantment.dynamicCost(5, 8),
+                        Enchantment.dynamicCost(25, 8),
+                        2,
+                        EquipmentSlotGroup.FEET))
+        .exclusiveWith(enchantments.getOrThrow(EnchantmentTags.BOOTS_EXCLUSIVE))
+                        .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                                new LunarSpeedEnchantment(),
+                                LootItemEntityPropertyCondition.hasProperties(
+                                        LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnGround(true))
+                                )
+                                )
+                /*.withEffect(
+                        EnchantmentEffectComponents.ATTRIBUTES,
+                        Attributes.MOVEMENT_SPEED
+                        ,new LunarSpeedEnchantment()));
+*/
+                /*.withEffect(
+                        EnchantmentEffectComponents.DAMAGE_IMMUNITY,
+                        DamageImmunity.INSTANCE,
+                        DamageSourceCondition.hasDamageSource(
+                                DamageSourcePredicate.Builder.damageType()
+                                        .tag(TagPredicate.is(DamageTypeTags.IS_FREEZING))
+                                        .tag(TagPredicate.isNot(DamageTypeTags.BYPASSES_INVULNERABILITY))
+                        )
+                )*/
+        );
         register(
                 context,
                 BLOOD_WALKER,

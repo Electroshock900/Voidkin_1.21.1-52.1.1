@@ -4,42 +4,48 @@ import net.minecraft.FieldsAreNonnullByDefault;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@OnlyIn(Dist.CLIENT)
 public class VoidFlameParticles extends RisingParticle {
-    protected VoidFlameParticles(ClientLevel pLevel, double pX, double pY, double pZ,
-                                 SpriteSet spriteSet, double pXSpeed, double pYSpeed, double pZSpeed) {
+    VoidFlameParticles(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
         super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
-        this.friction = 0.8f;
-        this.lifetime = 6;
-        this.xd = pXSpeed;
-        this.yd = pYSpeed;
-        this.zd = pZSpeed;
-        //this.hasPhysics = true;
-        this.setSpriteFromAge(spriteSet);
-        this.rCol=1f;
-        this.gCol=1f;
-        this.bCol=1f;
-
-        this.setSpriteFromAge(spriteSet);
     }
 
+    @Override
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    }
+
+    @Override
     public void move(double pX, double pY, double pZ) {
         this.setBoundingBox(this.getBoundingBox().move(pX, pY, pZ));
         this.setLocationFromBoundingbox();
     }
 
+    @Override
     public float getQuadSize(float pScaleFactor) {
         float f = ((float)this.age + pScaleFactor) / (float)this.lifetime;
         return this.quadSize * (1.0F - f * f * 0.5F);
     }
 
     @Override
-    public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public int getLightColor(float pPartialTick) {
+        float f = ((float)this.age + pPartialTick) / (float)this.lifetime;
+        f = Mth.clamp(f, 0.0F, 1.0F);
+        int i = super.getLightColor(pPartialTick);
+        int j = i & 0xFF;
+        int k = i >> 16 & 0xFF;
+        j += (int)(f * 15.0F * 16.0F);
+        if (j > 240) {
+            j = 240;
+        }
+
+        return j | k << 16;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -50,30 +56,44 @@ public class VoidFlameParticles extends RisingParticle {
             this.sprite = pSprites;
         }
 
-        @Override
-        @Nullable
-        public Particle createParticle(SimpleParticleType pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
-            return new VoidFlameParticles(pLevel, pX, pY, pZ, this.sprite, pXSpeed, pYSpeed, pZSpeed);
-            //VoidFlameParticles flameparticle = new VoidFlameParticles(pLevel, pX, pY, pZ, this.sprite, pXSpeed, pYSpeed, pZSpeed);
-            //flameparticle.pickSprite(this.sprite);
-            //return flameparticle;
+        public Particle createParticle(
+                SimpleParticleType pType,
+                ClientLevel pLevel,
+                double pX,
+                double pY,
+                double pZ,
+                double pXSpeed,
+                double pYSpeed,
+                double pZSpeed
+        ) {
+            VoidFlameParticles flameparticle = new VoidFlameParticles(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
+            flameparticle.pickSprite(this.sprite);
+            return flameparticle;
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     public static class SmallFlameProvider implements ParticleProvider<SimpleParticleType> {
-        private final SpriteSet spriteSet;
+        private final SpriteSet sprite;
 
-        public SmallFlameProvider(SpriteSet spriteSet) {
-            this.spriteSet = spriteSet;
+        public SmallFlameProvider(SpriteSet pSprites) {
+            this.sprite = pSprites;
         }
 
-        public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double pX, double pY, double pZ,
-                                       double pXSpeed, double pYSpeed, double pZSpeed) {
-                    VoidFlameParticles vf = new VoidFlameParticles(level, pX, pY, pZ, this.spriteSet, pXSpeed, pYSpeed, pZSpeed);
-            vf.pickSprite(this.spriteSet);
-            vf.scale(0.5F);
-            return vf;
+        public Particle createParticle(
+                SimpleParticleType pType,
+                ClientLevel pLevel,
+                double pX,
+                double pY,
+                double pZ,
+                double pXSpeed,
+                double pYSpeed,
+                double pZSpeed
+        ) {
+            VoidFlameParticles flameparticle = new VoidFlameParticles(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
+            flameparticle.pickSprite(this.sprite);
+            flameparticle.scale(0.5F);
+            return flameparticle;
         }
     }
 }

@@ -45,6 +45,7 @@ public class ModEventBusClientEvents {
 
         event.registerLayerDefinition(Manta_Ray_Model.LAYER_LOCATION, Manta_Ray_Model::createBodyLayer);
         event.registerLayerDefinition(Owl_Model.LAYER_LOCATION, Owl_Model::createBodyLayer);
+        event.registerLayerDefinition(HornedOwlModel.LAYER_LOCATION, HornedOwlModel::createBodyLayer);
         event.registerLayerDefinition(Penguin_Model.LAYER_LOCATION, Penguin_Model::createBodyLayer);
 
         event.registerLayerDefinition(War_Turtle_Model.LAYER_LOCATION, War_Turtle_Model::createBodyLayer);
@@ -75,6 +76,7 @@ public class ModEventBusClientEvents {
 
         EntityRenderers.register(ModEntities.MANTA_RAY.get(), Manta_Ray_Renderer::new);
         EntityRenderers.register(ModEntities.OWL.get(), OwlRenderer::new);
+        EntityRenderers.register(ModEntities.HORNED_OWL.get(), Horned_Owl_Renderer::new);
         EntityRenderers.register(ModEntities.PENGUIN.get(), PenguinRenderer::new);
 
         EntityRenderers.register(ModEntities.WAR_TURTLE.get(), War_Turtle_Renderer::new);
@@ -130,7 +132,7 @@ public class ModEventBusClientEvents {
 
     @SubscribeEvent
     public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(ModBlockEntities.POLISHER_BLOCK_ENTITY.get(), PolisherBlockEntityRenderer::new);
+        //event.registerBlockEntityRenderer(ModBlockEntities.POLISHER_BLOCK_ENTITY.get().getBlockEntity(), PolisherBlockEntityRenderer::new);
         //event.registerBlockEntityRenderer(ModBlockEntities.SPECIAL_FURNACE_BLOCK_ENTITY.get(), SpecialFurnaceBlockEntityRenderer::new);
         //event.registerBlockEntityRenderer(ModBlockEntities.DOM_BE.get(), DomBER::new);
         event.registerBlockEntityRenderer(ModBlockEntities.PEDESTAL.get(), PedestalBlockEntityRenderer::new);

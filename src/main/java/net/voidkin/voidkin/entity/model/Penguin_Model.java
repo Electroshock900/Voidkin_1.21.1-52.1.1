@@ -5,6 +5,7 @@ package net.voidkin.voidkin.entity.model;// Made with Blockbench 4.8.3
 
 import net.voidkin.voidkin.VoidkinMod;
 import net.voidkin.voidkin.animations.ModAnimationDefinitions;
+import net.voidkin.voidkin.animations.PenguinAnimations;
 import net.voidkin.voidkin.entity.custom.PenguinEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -57,8 +58,8 @@ public class Penguin_Model<T extends Entity> extends HierarchicalModel<T> {
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 		this.applyHeadRotation(netHeadYaw, headPitch, ageInTicks);
 
-		this.animateWalk(ModAnimationDefinitions.PENGUIN_SLIDE, limbSwing, limbSwingAmount, 2f, 2.5f);
-		this.animate(((PenguinEntity) entity).idleAnimationState, ModAnimationDefinitions.PENGUIN_IDLE, ageInTicks, 1f);
+		this.animateWalk(PenguinAnimations.PENGUIN_SLIDE, limbSwing, limbSwingAmount, 2f, 2.5f);
+		this.animate(((PenguinEntity) entity).idleAnimationState, PenguinAnimations.PENGUIN_IDLE, ageInTicks, 1f);
 		//this.animate(((MantaRayEntity) entity).attackAnimationState, ModAnimationDefinitions.CACTUS_BUDDY_ATTACK, ageInTicks, 1f);
 	}
 	private void applyHeadRotation(float pNetHeadYaw, float pHeadPitch, float pAgeInTicks) {

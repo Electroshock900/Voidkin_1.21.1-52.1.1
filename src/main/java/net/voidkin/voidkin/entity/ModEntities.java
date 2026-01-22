@@ -79,6 +79,13 @@ public static RegistryObject<EntityType<AresArrow>> ARESARROW = ENTITY_TYPES.reg
                             .sized(0.4f, 0.4f)
                             .build("cactus_buddy")
             );
+    public static final RegistryObject<EntityType<PearyEntity>> PEARY =
+            ENTITY_TYPES.register("peary", () -> EntityType.Builder.of(PearyEntity::new, MobCategory.CREATURE)
+                            .sized(0.4f, 0.4f)
+                            .build("peary")
+            );
+
+
 
     public static final RegistryObject<EntityType<Skull_Entity>> SKULL =
             ENTITY_TYPES.register("skull",
@@ -86,7 +93,6 @@ public static RegistryObject<EntityType<AresArrow>> ARESARROW = ENTITY_TYPES.reg
                             .sized(1.0f, 1.0f)
                             .build(ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID,"skull").toString())
             );
-
 
     public static final RegistryObject<EntityType<Mini_Skull_Entity>> MINI_SKULL =
             ENTITY_TYPES.register("mini_skull",
@@ -117,9 +123,17 @@ public static RegistryObject<EntityType<AresArrow>> ARESARROW = ENTITY_TYPES.reg
     public static final RegistryObject<EntityType<OwlEntity>> OWL =
             ENTITY_TYPES.register("owl",() ->
                     EntityType.Builder.of(OwlEntity::new,MobCategory.AMBIENT)
-                            .sized(1f,2f)
+                            .sized(0.5f,0.5f)
                             .build(ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID,"owl").toString())
                             );
+    public static final RegistryObject<EntityType<HornedOwlEntity>> HORNED_OWL =
+            ENTITY_TYPES.register("horned_owl",() ->
+                    EntityType.Builder.of(HornedOwlEntity::new,MobCategory.AMBIENT)
+                            .sized(0.75f,0.75f)
+                            .build(ResourceLocation.fromNamespaceAndPath(VoidkinMod.MODID,"horned_owl").toString())
+                            );
+
+
     public static final RegistryObject<EntityType<PenguinEntity>> PENGUIN =
             ENTITY_TYPES.register("penguin",() ->
                     EntityType.Builder.of(PenguinEntity::new,MobCategory.AMBIENT)

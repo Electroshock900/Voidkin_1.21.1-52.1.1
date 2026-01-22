@@ -1,7 +1,7 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
-	"parent": "voidkin:block/void_altar",
+	"parent": "voidkin:void_altar",
 	"texture_size": [128, 128],
 	"textures": {
 		"0": "voidkin:block/void_altar",

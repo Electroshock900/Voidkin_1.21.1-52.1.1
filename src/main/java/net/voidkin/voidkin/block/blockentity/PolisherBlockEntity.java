@@ -136,7 +136,7 @@ public class PolisherBlockEntity extends BlockEntity implements MenuProvider {
 
     @Override
     protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
+        pTag.put("polisher.inventory", itemHandler.serializeNBT(pRegistries));
         pTag.putInt("polisher.progress", progress);
 
         super.saveAdditional(pTag, pRegistries);
@@ -145,7 +145,7 @@ public class PolisherBlockEntity extends BlockEntity implements MenuProvider {
     @Override
     public void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
-        itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
+        itemHandler.deserializeNBT(pRegistries, pTag.getCompound("poliosher.inventory"));
         progress = pTag.getInt("polisher.progress");
     }
 

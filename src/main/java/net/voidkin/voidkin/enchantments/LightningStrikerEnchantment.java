@@ -29,12 +29,9 @@ public record LightningStrikerEnchantment() implements EnchantmentEntityEffect {
     public boolean isAllowedOnBooks() {
         return true;
     }
-
-    @Override
-    public int getMaxLevel() {
-        return 4;
-    }
 */
+
+
     @Override
     public void apply(ServerLevel pLevel, int pEnchantmentLevel, EnchantedItemInUse pItem, Entity pEntity, Vec3 pOrigin) {
         BlockPos position = pEntity.blockPosition();

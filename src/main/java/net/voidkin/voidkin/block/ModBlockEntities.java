@@ -23,10 +23,18 @@ public class ModBlockEntities {
                 BlockEntityType.Builder.of(AbyssalChestEntity::new,
                 ModBlocks.CHEST.get()
         ).build(null));**/
-    public static final RegistryObject<BlockEntityType<PolisherBlockEntity>> POLISHER_BLOCK_ENTITY =
+    /*public static final RegistryObject<BlockEntityType<PolisherBlockEntity>> POLISHER_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("polisher_block_entity", () ->
                     BlockEntityType.Builder.of(PolisherBlockEntity::new,
+                            ModBlocks.POLISHER.get()).build(null));*/
+    public static final RegistryObject<BlockEntityType<?>> POLISHER_BLOCK_ENTITY2 =
+            register("polisher_be",ModBlocks.POLISHER,
+                    PolisherBlockEntity::new);
+    public static final RegistryObject<BlockEntityType<PolisherBlockEntity>> POLISHER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("polisher_block_entity", ()->
+                    BlockEntityType.Builder.of(PolisherBlockEntity::new,
                             ModBlocks.POLISHER.get()).build(null));
+
 
     public static final RegistryObject<BlockEntityType<SBlockEntity>> S_BLOCK_ENTITY =
                     BLOCK_ENTITIES.register("s_block_entity", () -> BlockEntityType.Builder.of(
