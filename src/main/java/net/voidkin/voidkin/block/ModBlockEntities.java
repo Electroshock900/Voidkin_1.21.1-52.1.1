@@ -27,11 +27,8 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("polisher_block_entity", () ->
                     BlockEntityType.Builder.of(PolisherBlockEntity::new,
                             ModBlocks.POLISHER.get()).build(null));*/
-    public static final RegistryObject<BlockEntityType<?>> POLISHER_BLOCK_ENTITY2 =
-            register("polisher_be",ModBlocks.POLISHER,
-                    PolisherBlockEntity::new);
     public static final RegistryObject<BlockEntityType<PolisherBlockEntity>> POLISHER_BLOCK_ENTITY =
-            BLOCK_ENTITIES.register("polisher_block_entity", ()->
+            BLOCK_ENTITIES.register("polisher", ()->
                     BlockEntityType.Builder.of(PolisherBlockEntity::new,
                             ModBlocks.POLISHER.get()).build(null));
 
