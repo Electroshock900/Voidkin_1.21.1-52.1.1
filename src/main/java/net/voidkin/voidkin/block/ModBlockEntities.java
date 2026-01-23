@@ -37,17 +37,8 @@ public class ModBlockEntities {
                     BLOCK_ENTITIES.register("s_block_entity", () -> BlockEntityType.Builder.of(
                                     SBlockEntity::new,
                             ModBlocks.SBLOCK.get()).build(null));
-/*
-    public static final RegistryObject<BlockEntityType<DomBE>> DOM_BE =
-            BLOCK_ENTITIES.register("dom", ()->
-                    BlockEntityType.Builder.of(DomBE::new,
-                            ModBlocks.DOM_BLOCK.get()).build(null));
 
-        public static final RegistryObject<BlockEntityType<SubBE>> SUB_BE =
-            BLOCK_ENTITIES.register("sub", ()->
-                    BlockEntityType.Builder.of(SubBE::new,
-                            ModBlocks.SUB_BLOCK.get()).build(null));
-*/
+
 
 
     public static final RegistryObject<BlockEntityType<VoidAltarBlockEntity>> VOID_ALTAR =

@@ -1,10 +1,10 @@
 {   "parent": "block/block",
   "render_type": "minecraft:cutout",
   "textures": {
-    "particle": "voidkin:block/anti_cactus_side",
-    "bottom": "voidkin:block/anti_cactus_bottom",
-    "top": "voidkin:block/anti_cactus_top",
-    "side": "voidkin:block/anti_cactus_side"
+    "particle": "voidkin:block/blood_cactus_side",
+    "bottom": "voidkin:block/blood_cactus_bottom",
+    "top": "voidkin:block/blood_cactus_top",
+    "side": "voidkin:block/blood_cactus_side"
   },
   "elements": [
     {   "from": [ 0, 0, 0 ],

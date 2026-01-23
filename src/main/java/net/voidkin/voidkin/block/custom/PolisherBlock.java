@@ -83,9 +83,9 @@ public class PolisherBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        /*if(pLevel.isClientSide()) {
+        if(pLevel.isClientSide()) {
             return null;
-        }*/
+        }
 
         return createTickerHelper(pBlockEntityType, ModBlockEntities.POLISHER_BLOCK_ENTITY.get(),
                 (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));

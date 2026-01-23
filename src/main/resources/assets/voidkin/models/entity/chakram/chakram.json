@@ -3,8 +3,8 @@
 	"parent": "chakram",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "voidless:entity/chakram/chakram3",
-		"particle": "voidless:entity/chakram/chakram3"
+		"0": "voidkin:entity/chakram/chakram3",
+		"particle": "voidkin:entity/chakram/chakram3"
 	},
 	"elements": [
 		{

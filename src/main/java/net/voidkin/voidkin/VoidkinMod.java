@@ -7,6 +7,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
@@ -83,13 +84,13 @@ public class VoidkinMod
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
-        ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        ModItems.register(modEventBus);
 
         //ChestsEntities.registerBlockEntities();
 
-        ModBlockEntities.register(modEventBus);
         ModParticles.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
 
         ModMenuTypes.register(modEventBus);
         ModRecipes.register(modEventBus);
@@ -160,6 +161,15 @@ public class VoidkinMod
 
 
         Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
+        event.enqueueWork(() ->{
+           ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.ANTI_CACTUS.getId(), ModBlocks.POTTED_ANTI_CACTUS);
+           ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.BLOOD_CACTUS.getId(), ModBlocks.POTTED_BLOOD_CACTUS);
+           ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.DARK_CACTUS.getId(), ModBlocks.POTTED_DARK_CACTUS);
+           ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.END_CACTUS.getId(), ModBlocks.POTTED_END_CACTUS);
+
+           ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.CATMINT.getId(), ModBlocks.POTTED_CATMINT);
+           ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.LOTUS.getId(), ModBlocks.POTTED_LOTUS);
+        });
     }
 
     // Add the example block item to the building blocks tab

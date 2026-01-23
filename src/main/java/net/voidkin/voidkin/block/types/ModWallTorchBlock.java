@@ -51,8 +51,12 @@ public class ModWallTorchBlock extends ModTorchBlock {
         return CODEC;
     }
 
-    public ModWallTorchBlock(SimpleParticleType p_312024_, BlockBehaviour.Properties p_58123_) {
-        super(p_312024_, p_58123_);
+    public ModWallTorchBlock(SimpleParticleType particles, BlockBehaviour.Properties properties) {
+        super(particles, properties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+    }
+    public ModWallTorchBlock(BlockBehaviour.Properties properties) {
+        super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 

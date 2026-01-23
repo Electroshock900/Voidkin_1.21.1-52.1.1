@@ -1,4 +1,5 @@
 {   "parent": "block/block",
+  "render_type": "minecraft:cutout",
   "textures": {
     "particle": "voidkin:block/dark_cactus_side",
     "bottom": "voidkin:block/dark_cactus_bottom",

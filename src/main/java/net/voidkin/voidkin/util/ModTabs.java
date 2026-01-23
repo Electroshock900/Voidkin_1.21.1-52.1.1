@@ -209,6 +209,7 @@ public class ModTabs {
 
 
                         pOutput.accept(ModBlocks.ANTI_CACTUS.get());
+                        pOutput.accept(ModBlocks.BLOOD_CACTUS.get());
                         pOutput.accept(ModBlocks.DARK_CACTUS.get());
                         pOutput.accept(ModBlocks.END_CACTUS.get());
 

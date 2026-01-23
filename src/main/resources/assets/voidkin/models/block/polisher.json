@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "voidkin:polisher",
+	"parent": "voidkin:block/polisher",
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "voidkin:block/polisher",

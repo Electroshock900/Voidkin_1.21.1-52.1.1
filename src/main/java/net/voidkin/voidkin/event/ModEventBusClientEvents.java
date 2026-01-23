@@ -110,8 +110,10 @@ public class ModEventBusClientEvents {
     public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(ModParticles.CANDY_CANE_FLAME_PARTICLES.get(), CandyCaneFlameParticles.Provider::new);
         event.registerSpriteSet(ModParticles.DEATH_SKULLS.get(), DeathSkullParticles.Provider::new);
+
         event.registerSpriteSet(ModParticles.VOID_FLAME.get(), VoidFlameParticles.Provider::new);
         event.registerSpriteSet(ModParticles.SMALL_VOID_FLAME.get(), VoidFlameParticles.SmallFlameProvider::new);
+
         event.registerSpriteSet(ModParticles.SOUL_FLAME.get(), SoulFlameParticles.Provider::new);
         event.registerSpriteSet(ModParticles.ANTI_VOID.get(), Anti_Void_Particles.Provider::new);
         event.registerSpriteSet(ModParticles.SMALL_ANTI_VOID.get(), Anti_Void_Particles.SmallFlameProvider::new);
@@ -132,7 +134,7 @@ public class ModEventBusClientEvents {
 
     @SubscribeEvent
     public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
-        //event.registerBlockEntityRenderer(ModBlockEntities.POLISHER_BLOCK_ENTITY.get().getBlockEntity(), PolisherBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.POLISHER_BLOCK_ENTITY.get(), PolisherBlockEntityRenderer::new);
         //event.registerBlockEntityRenderer(ModBlockEntities.SPECIAL_FURNACE_BLOCK_ENTITY.get(), SpecialFurnaceBlockEntityRenderer::new);
         //event.registerBlockEntityRenderer(ModBlockEntities.DOM_BE.get(), DomBER::new);
         event.registerBlockEntityRenderer(ModBlockEntities.PEDESTAL.get(), PedestalBlockEntityRenderer::new);

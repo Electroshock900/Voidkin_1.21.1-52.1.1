@@ -3,10 +3,8 @@ package net.voidkin.voidkin.block.custom;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
@@ -14,7 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -26,21 +23,27 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.PlantType;
 import net.minecraftforge.common.IPlantable;
 
-public class AntiCactusBlock extends Block implements IPlantable {
-    public static final MapCodec<AntiCactusBlock> CODEC = simpleCodec(AntiCactusBlock::new);
+public class ModCactusBlock extends Block implements IPlantable {
+    public static final MapCodec<ModCactusBlock> CODEC = simpleCodec(ModCactusBlock::new);
     public static final IntegerProperty AGE = BlockStateProperties.AGE_15;
     public static final int MAX_AGE = 15;
     protected static final int AABB_OFFSET = 1;
     protected static final VoxelShape COLLISION_SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 15.0D, 15.0D);
     protected static final VoxelShape OUTLINE_SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 16.0D, 15.0D);
+    public int MaxHeight = 7;
 
     @Override
     protected MapCodec<? extends Block> codec() {
         return CODEC;
     }
 
-    public AntiCactusBlock(Properties p_51136_) {
+    public ModCactusBlock(Properties p_51136_) {
         super(p_51136_);
+        this.registerDefaultState(this.stateDefinition.any().setValue(AGE, Integer.valueOf(0)));
+    }
+    public ModCactusBlock(Properties p_51136_, int pMaxHeight) {
+        super(p_51136_);
+        this.MaxHeight = pMaxHeight;
         this.registerDefaultState(this.stateDefinition.any().setValue(AGE, Integer.valueOf(0)));
     }
 
@@ -63,7 +66,7 @@ public class AntiCactusBlock extends Block implements IPlantable {
                 i++;
             }
 
-            if (i < 3) {
+            if (i < MaxHeight) {
                 int j = pState.getValue(AGE);
                 if (ForgeHooks.onCropsGrowPre(pLevel, blockpos, pState, true)) {
                     if (j == 15) {
@@ -106,6 +109,9 @@ public class AntiCactusBlock extends Block implements IPlantable {
         }
 
         BlockState blockstate1 = pLevel.getBlockState(pPos.below());
+        if (blockstate1.is(this)){
+            return true;
+        }
         return blockstate1.canSustainPlant(pLevel, pPos, Direction.UP, this) && !pLevel.getBlockState(pPos.above()).liquid();
     }
 
@@ -133,15 +139,6 @@ public class AntiCactusBlock extends Block implements IPlantable {
         return defaultBlockState();
     }
 
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource randomSource) {
-        super.animateTick(state, level, pos, randomSource);
-        if (randomSource.nextInt(10) == 0) {
-            BlockPos blockpos = pos.above();
-            BlockState blockstate = level.getBlockState(blockpos);
-            if (!isFaceFull(blockstate.getCollisionShape(level, blockpos), Direction.UP)) {
-                ParticleUtils.spawnParticles(level, pos, 5,randomSource.nextDouble(), randomSource.nextDouble(),true,ParticleTypes.SOUL_FIRE_FLAME);
-            }
-        }
-    }
+
 }
 

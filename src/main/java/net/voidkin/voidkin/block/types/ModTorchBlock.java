@@ -24,8 +24,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.voidkin.voidkin.block.custom.PolisherBlock;
+import net.voidkin.voidkin.particles.ModParticles;
 
-public class ModTorchBlock extends BaseTorchBlock {
+public class ModTorchBlock extends ModBaseTorchBlock {
     protected static final MapCodec<SimpleParticleType> PARTICLE_OPTIONS_FIELD = BuiltInRegistries.PARTICLE_TYPE
             .byNameCodec()
             .comapFlatMap(
@@ -49,6 +50,11 @@ public class ModTorchBlock extends BaseTorchBlock {
         super(p_57491_);
         this.flameParticle = p_310235_;
     }
+    public ModTorchBlock(Properties properties){
+        super(properties);
+        this.flameParticle = ParticleTypes.SCULK_SOUL;
+    }
+
 
     @Override
     public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
