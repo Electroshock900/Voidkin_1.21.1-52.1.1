@@ -81,7 +81,8 @@
   "block.voidkin.void_trapdoor": "Void Wood Trapdoor",
   "block.voidkin.void_chest": "Void Chest",
 
-  "block.voidkin.dark_cactus": "Blood Cactus",
+  "block.voidkin.dark_cactus": "Dark Cactus",
+  "block.voidkin.blood_cactus": "Blood Cactus",
   "block.voidkin.end_cactus": "Ender Cactus",
   "block.voidkin.anti_cactus": "Anti Cactus",
   "block.voidkin.catmint": "Catmint",
@@ -121,6 +122,7 @@
   "item.voidkin.tiger_spawn_egg": "Tiger Spawn Egg",
   "item.voidkin.lion_thing_egg": "Lion Thing Spawn Egg",
   "item.voidkin.owl_egg": "Owl Spawn Egg",
+  "item.voidkin.horned_owl_egg": "Horned Owl Spawn Egg",
   "item.voidkin.penguin_egg": "Penguin Spawn Egg",
   "item.voidkin.manta_ray_egg": "Manta Ray Spawn Egg",
 

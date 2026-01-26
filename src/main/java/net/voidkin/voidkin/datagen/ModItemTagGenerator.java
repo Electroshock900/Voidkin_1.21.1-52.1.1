@@ -22,6 +22,17 @@ public class ModItemTagGenerator extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
+        this.tag(ItemTags.BOATS)
+                .add(ModItems.DARK_BOAT.get(),
+                ModItems.BLOOD_BOAT.get(),
+                ModItems.VOID_BOAT.get()
+                );
+        this.tag(ItemTags.CHEST_BOATS)
+                .add(ModItems.DARK_CHEST_BOAT.get(),
+                ModItems.BLOOD_CHEST_BOAT.get(),
+                ModItems.VOID_CHEST_BOAT.get()
+                );
+
         this.tag(Tags.Items.CROPS_CACTUS)
                 .add(ModBlocks.ANTI_CACTUS.get().asItem(),
                         ModBlocks.DARK_CACTUS.get().asItem(),

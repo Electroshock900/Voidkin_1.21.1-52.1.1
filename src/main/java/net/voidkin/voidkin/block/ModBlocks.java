@@ -106,13 +106,35 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> POTTED_ANTI_CACTUS = BLOCKS.register("potted_anti_cactus",
             () -> new FlowerPotBlock(() -> ((FlowerPotBlock) Blocks.FLOWER_POT), ModBlocks.ANTI_CACTUS,
-                    BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_CACTUS).noOcclusion()));
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_CACTUS).noOcclusion()){
+                public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource randomSource) {
+                    super.animateTick(state, level, pos, randomSource);
+                    if (randomSource.nextInt(10) == 0) {
+                        BlockPos blockpos = pos.above();
+                        BlockState blockstate = level.getBlockState(blockpos);
+                        if (!isFaceFull(blockstate.getCollisionShape(level, blockpos), Direction.UP)) {
+                            ParticleUtils.spawnParticles(level, pos, 5,randomSource.nextDouble()/2, randomSource.nextDouble()/2,true,ParticleTypes.SOUL_FIRE_FLAME);
+                        }
+                    }
+                }
+            });
     public static final RegistryObject<Block> POTTED_DARK_CACTUS = BLOCKS.register("potted_dark_cactus",
             () -> new FlowerPotBlock(() -> ((FlowerPotBlock) Blocks.FLOWER_POT), ModBlocks.DARK_CACTUS,
                     BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_CACTUS).noOcclusion()));
     public static final RegistryObject<Block> POTTED_BLOOD_CACTUS = BLOCKS.register("potted_blood_cactus",
             () -> new FlowerPotBlock(() -> ((FlowerPotBlock) Blocks.FLOWER_POT), ModBlocks.BLOOD_CACTUS,
-                    BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_CACTUS).noOcclusion()));
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_CACTUS).noOcclusion()){
+                public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource randomSource) {
+                    super.animateTick(state, level, pos, randomSource);
+                    if (randomSource.nextInt(10) == 0) {
+                        BlockPos blockpos = pos.above();
+                        BlockState blockstate = level.getBlockState(blockpos);
+                        if (!isFaceFull(blockstate.getCollisionShape(level, blockpos), Direction.UP)) {
+                            ParticleUtils.spawnParticles(level, pos, 5,randomSource.nextDouble()/2, randomSource.nextDouble()/2,true,ModParticles.DRIPPING_BLOOD.get());
+                        }
+                    }
+                }
+            });
     public static final RegistryObject<Block> POTTED_END_CACTUS = BLOCKS.register("potted_end_cactus",
             () -> new FlowerPotBlock(() -> ((FlowerPotBlock) Blocks.FLOWER_POT), ModBlocks.END_CACTUS,
                     BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_CACTUS).noOcclusion()));
@@ -349,13 +371,23 @@ public class ModBlocks {
             double d1 = (double)pPos.getY() + 0.7D;
             double d2 = (double)pPos.getZ() + 0.5D;
             //pLevel.addParticle(ParticleTypes.SMOKE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
-            pLevel.addParticle(ModParticles.VOID_FLAME.get(), d0, d1, d2, 0.0D, -0.05D, 0.0D);
+            pLevel.addParticle(ModParticles.VOID_FLAME.get(), d0, d1, d2, 0.0D, 0.05D, 0.0D);
             //pLevel.addParticle(ModParticles.VOID_FLAME.get(), d0, d1, d2, 0.0D, 0.0D, 0.0D);
         }
             });
 
     public static final RegistryObject<Block> VOID_WALL_TORCH = BLOCKS.register("void_torch_wall",
-            ()-> new ModWallTorchBlock(BlockBehaviour.Properties.of()));
+            ()-> new ModWallTorchBlock(BlockBehaviour.Properties.of()){
+                @Override
+                public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
+                    double d0 = (double)pPos.getX() + 0.5D;
+                    double d1 = (double)pPos.getY() + 0.7D;
+                    double d2 = (double)pPos.getZ() + 0.5D;
+                    //pLevel.addParticle(ParticleTypes.SMOKE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
+                    pLevel.addParticle(ModParticles.VOID_FLAME.get(), d0, d1, d2, 0.0D, 0.05D, 0.0D);
+                    //pLevel.addParticle(ModParticles.VOID_FLAME.get(), d0, d1, d2, 0.0D, 0.0D, 0.0D);
+                }
+            });
 
     public static final RegistryObject<Block> D_TORCH = BLOCKS.register("d_torch",
             ()-> new TorchBlock(ParticleTypes.SOUL, BlockBehaviour.Properties.of()){

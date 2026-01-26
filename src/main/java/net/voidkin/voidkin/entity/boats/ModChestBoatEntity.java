@@ -49,7 +49,7 @@ public class ModChestBoatEntity extends ChestBoat {
 
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
-        this.entityData.set(DATA_ID_TYPE, ModBoatEntity.Type.DARK.ordinal());
+        pBuilder.define(DATA_ID_TYPE, ModBoatEntity.Type.DARK.ordinal());
     }
 
     protected void addAdditionalSaveData(CompoundTag pCompound) {

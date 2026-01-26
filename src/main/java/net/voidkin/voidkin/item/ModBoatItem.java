@@ -80,7 +80,7 @@ public class ModBoatItem extends Item {
     }
 
     private Boat getBoat(Level pLevel, HitResult hitResult) {
-        return (ModBoatEntity) (this.hasChest ? new ModChestBoatEntity(pLevel, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z) :
+        return (Boat) (this.hasChest ? new ModChestBoatEntity(pLevel, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z) :
                 new ModBoatEntity(pLevel, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z));
     }
 }

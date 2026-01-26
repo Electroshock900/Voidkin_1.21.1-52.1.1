@@ -47,8 +47,6 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleItem(ModItems.UPSIDE_DOWN_MUSIC_DISC);
         simpleItem(ModItems.GRAVITY_MUSIC_DISC);*/
         withExistingParent(ModItems.HOSE.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        simpleBlockItem(ModBlocks.PEDESTAL);
-        //simpleItem(_);
     }
     protected void registerModels2() {
         //simpleItem(ModItems.DARK_SHARD);

@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.Block;
 import java.util.function.IntFunction;
 
 public class ModBoatEntity extends Boat {
-
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE = SynchedEntityData.defineId(ModBoatEntity.class, EntityDataSerializers.INT);
 
 
@@ -42,32 +41,57 @@ public class ModBoatEntity extends Boat {
             case VOID -> ModItems.VOID_BOAT.get();
         };
     }
-    public void setVariant(Type pVariant) {
+
+
+
+    public void setVariant(ModBoatEntity.Type pVariant) {
         this.entityData.set(DATA_ID_TYPE, pVariant.ordinal());
+        //this.setVariant(Boat.Type.byId(pVariant.ordinal()));
     }
 
-    public Type getModVariant() {
-        return Type.byId(this.entityData.get(DATA_ID_TYPE));
+    //@Override
+//    public Type getModVariant() {return Type.byId(this.entityData.get(DATA_ID_TYPE));}
+    public ModBoatEntity.Type getModVariant() {
+        return ModBoatEntity.Type.byId(this.entityData.get(DATA_ID_TYPE));
+        //return ModBoatEntity.Type.byId(this.getVariant().ordinal());
     }
 
+    public void setModVariant(ModBoatEntity.Type variant) {
+        this.setVariant(Boat.Type.byId(variant.ordinal()));
+    }
+
+
+    /*@Override
+    public Boat.Type getVariant() {
+        // Prevent vanilla from using its own variant system
+        return Boat.Type.OAK;
+    }*/
+
+    /*@Override
+    public void setVariant(Boat.Type type) {
+        // Prevent vanilla from writing to its own variant field
+        //this.entityData.set(DATA_ID_TYPE, Type.DARK.ordinal());
+        this.setVariant(Type.byName(type.getSerializedName()));
+    }*/
 
 
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
-        this.entityData.set(DATA_ID_TYPE, Type.DARK.ordinal());
+        //this.entityData.set(DATA_ID_TYPE, Type.DARK.ordinal());
+        pBuilder.define(DATA_ID_TYPE, ModBoatEntity.Type.DARK.ordinal());
     }
 
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
+    protected void addAdditionalSaveData2(CompoundTag pCompound) {
         pCompound.putString("Type", this.getModVariant().getSerializedName());
     }
 
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
+    protected void readAdditionalSaveData2(CompoundTag pCompound) {
         if (pCompound.contains("Type", 8)) {
-            this.setVariant(Type.byName(pCompound.getString("Type")));
+            this.setVariant(ModBoatEntity.Type.byName(pCompound.getString("Type")));
         }
     }
 
-    public static enum Type implements StringRepresentable {
+    public enum Type implements StringRepresentable {
         DARK(ModBlocks.DARK_PLANKS.get(), "dark"),
         BLOOD(ModBlocks.BLOOD_PLANKS.get(), "blood"),
         VOID(ModBlocks.VOID_PLANKS.get(), "void");
